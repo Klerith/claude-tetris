@@ -4,15 +4,50 @@
   padding: 0;
 }
 
+:root {
+  --bg: #0f0f17;
+  --text: #e0e0e0;
+  --canvas-bg: #1a1a25;
+  --border: #2a2a3a;
+  --label: #555570;
+  --controls-text: #888;
+  --kbd-bg: #22223a;
+  --kbd-border: #3a3a5a;
+  --kbd-text: #aaa;
+  --overlay-bg: rgba(10, 10, 20, 0.75);
+  --grid-line: #22222e;
+  --toggle-bg: #22223a;
+  --toggle-border: #3a3a5a;
+  --toggle-text: #aaa;
+}
+
+body.light-mode {
+  --bg: #f0f0f8;
+  --text: #1a1a2e;
+  --canvas-bg: #e4e4f0;
+  --border: #b0b0c8;
+  --label: #6060a0;
+  --controls-text: #404060;
+  --kbd-bg: #dcdcf0;
+  --kbd-border: #9090b8;
+  --kbd-text: #3a3a6a;
+  --overlay-bg: rgba(210, 210, 230, 0.85);
+  --grid-line: #c8c8dc;
+  --toggle-bg: #dcdcf0;
+  --toggle-border: #9090b8;
+  --toggle-text: #3a3a6a;
+}
+
 body {
-  background: #0f0f17;
-  color: #e0e0e0;
+  background: var(--bg);
+  color: var(--text);
   font-family: system-ui, -apple-system, sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
   user-select: none;
+  transition: background 0.25s, color 0.25s;
 }
 
 .wrapper {
@@ -21,6 +56,34 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 16px;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--toggle-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  letter-spacing: 1px;
+}
+
+.theme-toggle:hover {
+  border-color: #7aa2f7;
+  color: #7aa2f7;
+}
+
+.theme-toggle .toggle-icon {
+  font-size: 15px;
 }
 
 .game-title {
@@ -42,10 +105,11 @@ body {
 
 #board {
   display: block;
-  border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  border: 1px solid var(--border);
+  background: var(--canvas-bg);
   border-radius: 4px;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  transition: background 0.25s, border-color 0.25s;
 }
 
 /* ---- Panel lateral ---- */
@@ -66,8 +130,9 @@ body {
 .label {
   font-size: 10px;
   letter-spacing: 2px;
-  color: #555570;
+  color: var(--label);
   font-weight: 600;
+  transition: color 0.25s;
 }
 
 .value {
@@ -80,9 +145,10 @@ body {
 
 #next-canvas {
   display: block;
-  border: 1px solid #2a2a3a;
-  background: #1a1a25;
+  border: 1px solid var(--border);
+  background: var(--canvas-bg);
   border-radius: 4px;
+  transition: background 0.25s, border-color 0.25s;
 }
 
 /* ---- Controles ---- */
@@ -95,20 +161,22 @@ body {
 
 .controls li {
   font-size: 12px;
-  color: #888;
+  color: var(--controls-text);
   display: flex;
   align-items: center;
   gap: 4px;
+  transition: color 0.25s;
 }
 
 kbd {
-  background: #22223a;
-  border: 1px solid #3a3a5a;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
   border-radius: 3px;
   padding: 1px 6px;
   font-size: 11px;
   font-family: inherit;
-  color: #aaa;
+  color: var(--kbd-text);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
 /* ---- Overlay ---- */
@@ -118,9 +186,10 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 20, 0.75);
+  background: var(--overlay-bg);
   backdrop-filter: blur(4px);
   border-radius: 4px;
+  transition: background 0.25s;
 }
 
 .overlay.hidden {
