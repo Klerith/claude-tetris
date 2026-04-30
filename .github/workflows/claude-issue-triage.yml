@@ -50,6 +50,11 @@ jobs:
             5. Publica UN comentario de diagnóstico en el issue:
                `gh issue comment ${{ github.event.issue.number }} --body "<contenido>"`
 
+               El contenido debe estar escrito en Markdown compatible con GitHub (GFM):
+               usa encabezados con `##`, listas con `-`, bloques de código con triple backtick,
+               negritas con `**`, y referencias a archivos como `ruta/archivo.js:42`.
+               No uses HTML ni sintaxis que GitHub no renderice en comentarios de issues.
+
                El comentario debe tener exactamente esta estructura en español:
 
                ## 🔍 Diagnóstico automático
