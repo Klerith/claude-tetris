@@ -151,6 +151,33 @@ body {
   transition: background 0.25s, border-color 0.25s;
 }
 
+/* ---- Skin selector ---- */
+.skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  padding: 5px 8px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237aa2f7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+}
+
+.skin-select:hover,
+.skin-select:focus {
+  border-color: #7aa2f7;
+  outline: none;
+}
+
 /* ---- Controles ---- */
 .controls ul {
   list-style: none;
@@ -204,10 +231,17 @@ kbd {
   align-items: center;
 }
 
-#overlay-title {
+.overlay-title {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 4px;
+}
+
+.pause-title {
+  color: #7aa2f7;
+}
+
+.gameover-title {
   color: #e57373;
 }
 
@@ -233,4 +267,304 @@ kbd {
 
 #restart-btn:hover {
   background: #9bbdff;
+}
+
+/* ---- Pause Menu ---- */
+.pause-box {
+  min-width: 220px;
+}
+
+.pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.menu-btn {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  width: 100%;
+}
+
+.menu-btn:hover {
+  background: rgba(122, 162, 247, 0.15);
+  border-color: #7aa2f7;
+  color: #7aa2f7;
+}
+
+/* ---- Level Selector ---- */
+.level-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 20px;
+}
+
+.level-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--label);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.level-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.level-step {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 700;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1;
+  padding: 0;
+}
+
+.level-step:hover {
+  background: rgba(122, 162, 247, 0.2);
+  border-color: #7aa2f7;
+  color: #7aa2f7;
+}
+
+.level-value {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #7aa2f7;
+  min-width: 28px;
+  text-align: center;
+}
+
+/* ---- Controls Panel (inside pause menu) ---- */
+.controls-panel {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.controls-panel.hidden {
+  display: none;
+}
+
+.controls-panel-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--label);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.controls-panel-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.controls-panel-list li {
+  font-size: 12px;
+  color: var(--controls-text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ---- Leaderboard (start screen) ---- */
+.leaderboard-start {
+  width: 460px;
+  background: var(--canvas-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  transition: background 0.25s, border-color 0.25s;
+}
+
+.leaderboard-start.hidden {
+  display: none;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.clear-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--label);
+  font-size: 10px;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.clear-btn:hover {
+  border-color: #e57373;
+  color: #e57373;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+
+.leaderboard-table th {
+  color: var(--label);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-table td {
+  padding: 5px 6px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.leaderboard-table tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table .rank {
+  color: var(--label);
+  width: 24px;
+}
+
+.leaderboard-table .rec-name {
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.leaderboard-table .rec-score {
+  color: #7aa2f7;
+  font-weight: 700;
+}
+
+.leaderboard-table .record-new td {
+  color: #ffd54f;
+  text-shadow: 0 0 8px rgba(255, 213, 79, 0.6);
+}
+
+.leaderboard-table .record-new .rec-score {
+  color: #ffd54f;
+}
+
+.no-records {
+  text-align: center;
+  color: var(--label);
+  font-style: italic;
+}
+
+/* ---- Name input (game over overlay) ---- */
+.name-input-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.name-input-section.hidden {
+  display: none;
+}
+
+.name-prompt {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #ffd54f;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.name-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-name-input {
+  background: var(--kbd-bg);
+  border: 1px solid #7aa2f7;
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 6px 10px;
+  width: 130px;
+  text-transform: uppercase;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.player-name-input:focus {
+  border-color: #ffd54f;
+}
+
+.save-btn {
+  background: #ffd54f;
+  color: #0f0f17;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.save-btn:hover {
+  background: #ffe082;
+}
+
+/* ---- Leaderboard inside overlay ---- */
+.leaderboard-overlay {
+  width: 300px;
+  margin-top: 4px;
+}
+
+.leaderboard-overlay.hidden {
+  display: none;
+}
+
+.leaderboard-overlay > .label {
+  display: block;
+  text-align: center;
+  margin-bottom: 6px;
 }

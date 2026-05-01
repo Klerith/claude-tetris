@@ -35,6 +35,16 @@
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
 
+        <div class="panel-section">
+          <span class="label">SKIN</span>
+          <select id="skin-select" class="skin-select">
+            <option value="retro">Retro</option>
+            <option value="neon">Neon</option>
+            <option value="pastel">Pastel</option>
+            <option value="pixel">Pixel Art</option>
+          </select>
+        </div>
+
         <div class="panel-section controls">
           <span class="label">CONTROLS</span>
           <ul>
@@ -48,11 +58,92 @@
       </aside>
     </div>
 
-    <div id="overlay" class="overlay hidden">
+    <!-- Leaderboard shown on start screen -->
+    <div id="leaderboard-start" class="leaderboard-start hidden">
+      <div class="leaderboard-header">
+        <span class="label">TABLA DE RECORDS</span>
+        <button id="clear-records-btn" class="clear-btn">BORRAR</button>
+      </div>
+      <table class="leaderboard-table" id="leaderboard-start-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>NOMBRE</th>
+            <th>PUNTOS</th>
+            <th>LÍNEAS</th>
+            <th>COMBO</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-start-body"></tbody>
+      </table>
+    </div>
+
+    <!-- Pause Menu Overlay -->
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="overlay-box pause-box">
+        <p class="overlay-title pause-title">PAUSED</p>
+
+        <div class="pause-menu">
+          <button class="menu-btn" id="resume-btn">Resume</button>
+          <button class="menu-btn" id="pause-restart-btn">Restart</button>
+          <button class="menu-btn" id="controls-btn">View Controls</button>
+
+          <div class="level-selector">
+            <span class="level-label">Starting Level</span>
+            <div class="level-controls">
+              <button class="level-step" id="level-down">−</button>
+              <span class="level-value" id="start-level-display">1</span>
+              <button class="level-step" id="level-up">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-panel hidden" id="controls-panel">
+          <p class="controls-panel-title">CONTROLS</p>
+          <ul class="controls-panel-list">
+            <li><kbd>←</kbd><kbd>→</kbd> move</li>
+            <li><kbd>↑</kbd> / <kbd>X</kbd> rotate</li>
+            <li><kbd>↓</kbd> soft drop</li>
+            <li><kbd>Space</kbd> hard drop</li>
+            <li><kbd>P</kbd> / <kbd>Esc</kbd> pause</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div id="gameover-overlay" class="overlay hidden">
       <div class="overlay-box">
-        <p id="overlay-title">GAME OVER</p>
+        <p class="overlay-title gameover-title">GAME OVER</p>
         <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+
+        <!-- Name input shown only when score qualifies -->
+        <div id="name-input-section" class="name-input-section hidden">
+          <p class="name-prompt">NUEVO RECORD — ingresa tu nombre:</p>
+          <div class="name-input-row">
+            <input type="text" id="player-name-input" class="player-name-input" maxlength="12" placeholder="JUGADOR" />
+            <button id="save-record-btn" class="save-btn">GUARDAR</button>
+          </div>
+        </div>
+
+        <!-- Leaderboard shown inside overlay after game over -->
+        <div id="leaderboard-overlay" class="leaderboard-overlay hidden">
+          <span class="label">TABLA DE RECORDS</span>
+          <table class="leaderboard-table" id="leaderboard-overlay-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>NOMBRE</th>
+                <th>PUNTOS</th>
+                <th>LÍNEAS</th>
+                <th>COMBO</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-overlay-body"></tbody>
+          </table>
+        </div>
+
+        <button id="restart-btn">Restart</button>
       </div>
     </div>
   </div>
