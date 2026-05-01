@@ -234,3 +234,130 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- High scores ---- */
+.btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.btn:hover {
+  background: #9bbdff;
+}
+
+.name-input {
+  background: var(--canvas-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  padding: 6px 10px;
+  width: 160px;
+  text-align: center;
+  transition: background 0.25s, border-color 0.25s, color 0.25s;
+}
+
+.name-input:focus {
+  outline: none;
+  border-color: #7aa2f7;
+}
+
+#score-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.scores-table {
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  width: 100%;
+  max-width: 240px;
+}
+
+.scores-table td {
+  padding: 3px 6px;
+  color: var(--text);
+}
+
+.scores-table .rank {
+  color: var(--label);
+  text-align: right;
+  width: 20px;
+}
+
+.scores-table .score-val {
+  text-align: right;
+  color: #7aa2f7;
+}
+
+.scores-table .highlight-row td {
+  background: rgba(122, 162, 247, 0.15);
+  color: #ffd54f;
+}
+
+/* ---- Sidebar records panel ---- */
+.records-table {
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  width: 100%;
+}
+
+.records-table td {
+  padding: 2px 2px;
+  color: var(--controls-text);
+  transition: color 0.25s;
+}
+
+.records-table .rank {
+  color: var(--label);
+  width: 16px;
+}
+
+.records-table .rec-score {
+  text-align: right;
+  color: #7aa2f7;
+}
+
+.records-empty {
+  color: var(--label);
+  font-size: 10px;
+}
+
+.records-stats {
+  font-size: 10px;
+  color: var(--label);
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1.6;
+  transition: color 0.25s;
+}
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--label);
+  font-size: 10px;
+  padding: 2px 8px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  align-self: flex-start;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.btn-reset:hover {
+  border-color: #e57373;
+  color: #e57373;
+}
