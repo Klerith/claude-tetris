@@ -204,11 +204,17 @@ kbd {
   align-items: center;
 }
 
-#overlay-title {
+#overlay-title,
+#overlay-title-gameover {
   font-size: 28px;
   font-weight: 800;
   letter-spacing: 4px;
   color: #e57373;
+}
+
+#overlay-title {
+  color: #7aa2f7;
+  margin-bottom: 4px;
 }
 
 #overlay-score {
@@ -217,7 +223,7 @@ kbd {
   color: #7aa2f7;
 }
 
-#restart-btn {
+.menu-btn {
   margin-top: 8px;
   background: #7aa2f7;
   color: #0f0f17;
@@ -229,8 +235,55 @@ kbd {
   cursor: pointer;
   letter-spacing: 1px;
   transition: background 0.15s;
+  width: 100%;
 }
 
-#restart-btn:hover {
+.menu-btn:hover {
   background: #9bbdff;
+}
+
+.controls-list {
+  list-style: none;
+  text-align: left;
+  font-size: 12px;
+  color: var(--controls-text);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: var(--canvas-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  width: 100%;
+}
+
+.controls-list li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.controls-list.hidden {
+  display: none;
+}
+
+.level-select-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text);
+  width: 100%;
+}
+
+.level-select-row select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
 }
