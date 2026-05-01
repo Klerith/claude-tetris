@@ -30,6 +30,26 @@ const PIECES = [
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
+function loadScores() {
+  try { return JSON.parse(localStorage.getItem('tetris-highscores')) || []; }
+  catch { return []; }
+}
+function saveScores(list) {
+  localStorage.setItem('tetris-highscores', JSON.stringify(list));
+}
+function addScore(entry) {
+  const list = loadScores();
+  list.push(entry);
+  list.sort((a, b) => b.score - a.score);
+  const trimmed = list.slice(0, 5);
+  saveScores(trimmed);
+  return trimmed;
+}
+function qualifies(s) {
+  const list = loadScores();
+  return s > 0 && (list.length < 5 || s > list[list.length - 1].score);
+}
+
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-canvas');
@@ -41,8 +61,16 @@ const overlay = document.getElementById('overlay');
 const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
+const scoreEntry = document.getElementById('score-entry');
+const playerNameInput = document.getElementById('player-name');
+const saveScoreBtn = document.getElementById('save-score-btn');
+const overlayScoresTable = document.getElementById('overlay-scores-table');
+const recordsTable = document.getElementById('records-table');
+const recordsStats = document.getElementById('records-stats');
+const resetScoresBtn = document.getElementById('reset-scores-btn');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let comboStreak, maxCombo;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -105,12 +133,16 @@ function clearLines() {
       r++;
     }
   }
-  if (cleared) {
+  if (cleared > 0) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    comboStreak++;
+    if (comboStreak > maxCombo) maxCombo = comboStreak;
     updateHUD();
+  } else {
+    comboStreak = 0;
   }
 }
 
@@ -220,12 +252,38 @@ function drawNext() {
       drawBlock(nextCtx, offX + c, offY + r, shape[r][c], NB);
 }
 
+function renderScoresTable(list, highlightName) {
+  const tbl = overlayScoresTable;
+  tbl.innerHTML = '';
+  list.forEach((e, i) => {
+    const tr = document.createElement('tr');
+    if (highlightName && e.name === highlightName && e.score === score) {
+      tr.className = 'highlight-row';
+    }
+    tr.innerHTML = `<td class="rank">${i + 1}.</td><td>${e.name}</td><td class="score-val">${e.score.toLocaleString()}</td>`;
+    tbl.appendChild(tr);
+  });
+  tbl.classList.remove('hidden');
+}
+
 function endGame() {
   gameOver = true;
   cancelAnimationFrame(animId);
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
+
+  const canSave = qualifies(score);
+  if (canSave) {
+    playerNameInput.value = localStorage.getItem('tetris-last-name') || '';
+    scoreEntry.classList.remove('hidden');
+    overlayScoresTable.classList.add('hidden');
+  } else {
+    scoreEntry.classList.add('hidden');
+    renderScoresTable(loadScores(), null);
+  }
+
   overlay.classList.remove('hidden');
+  if (canSave) playerNameInput.focus();
 }
 
 function togglePause() {
@@ -259,6 +317,28 @@ function loop(ts) {
   animId = requestAnimationFrame(loop);
 }
 
+function renderSidebarRecords() {
+  const list = loadScores();
+  recordsTable.innerHTML = '';
+  if (list.length === 0) {
+    recordsTable.innerHTML = '<tr><td class="records-empty">Sin registros</td></tr>';
+  } else {
+    list.forEach((e, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td class="rank">${i + 1}.</td><td>${e.name}</td><td class="rec-score">${e.score.toLocaleString()}</td>`;
+      recordsTable.appendChild(tr);
+    });
+  }
+  let bestCombo = 0, bestLines = 0;
+  for (const e of list) {
+    if ((e.combo || 0) > bestCombo) bestCombo = e.combo || 0;
+    if ((e.lines || 0) > bestLines) bestLines = e.lines || 0;
+  }
+  recordsStats.textContent = bestLines > 0
+    ? `Combo: ${bestCombo}  Lines: ${bestLines}`
+    : '';
+}
+
 function init() {
   board = createBoard();
   score = 0;
@@ -266,9 +346,13 @@ function init() {
   level = 1;
   paused = false;
   gameOver = false;
+  comboStreak = 0;
+  maxCombo = 0;
   dropInterval = 1000;
   dropAccum = 0;
   lastTime = performance.now();
+  scoreEntry.classList.add('hidden');
+  overlayScoresTable.classList.add('hidden');
   next = randomPiece();
   spawn();
   updateHUD();
@@ -304,6 +388,20 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
+saveScoreBtn.addEventListener('click', () => {
+  const name = playerNameInput.value.trim() || 'Anónimo';
+  localStorage.setItem('tetris-last-name', name);
+  const list = addScore({ name, score, lines, combo: maxCombo, date: new Date().toLocaleDateString() });
+  scoreEntry.classList.add('hidden');
+  renderScoresTable(list, name);
+  renderSidebarRecords();
+});
+
+resetScoresBtn.addEventListener('click', () => {
+  saveScores([]);
+  renderSidebarRecords();
+});
+
 const themeToggle = document.getElementById('theme-toggle');
 const toggleIcon = themeToggle.querySelector('.toggle-icon');
 const toggleLabel = themeToggle.querySelector('.toggle-label');
@@ -329,4 +427,5 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
 });
 
+renderSidebarRecords();
 init();
