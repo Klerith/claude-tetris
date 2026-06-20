@@ -234,3 +234,132 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Name entry ---- */
+.hs-prompt {
+  font-size: 12px;
+  color: var(--label);
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.name-entry-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+#player-name-input {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--text);
+  width: 130px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#player-name-input:focus {
+  border-color: #7aa2f7;
+}
+
+#save-score-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover {
+  background: #9bbdff;
+}
+
+/* ---- High scores table ---- */
+.hs-list {
+  list-style: none;
+  width: 220px;
+  margin: 0 auto 8px;
+}
+
+.hs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.hs-row:nth-child(even) {
+  background: rgba(122, 162, 247, 0.05);
+}
+
+.hs-highlight {
+  background: rgba(122, 162, 247, 0.22) !important;
+  color: #7aa2f7;
+  font-weight: 700;
+}
+
+.hs-rank {
+  width: 28px;
+  color: var(--label);
+  font-size: 11px;
+}
+
+.hs-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.hs-score {
+  color: #ffd54f;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hs-empty {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--label);
+  padding: 8px 0;
+  text-align: center;
+}
+
+.reset-btn {
+  background: transparent;
+  color: var(--label);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-family: 'Courier New', Courier, monospace;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: 4px;
+}
+
+.reset-btn:hover {
+  color: #e57373;
+  border-color: #e57373;
+}
+
+/* ---- Overlay box wider to fit table ---- */
+.overlay-box {
+  min-width: 260px;
+}
