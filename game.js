@@ -4,17 +4,6 @@ const COLS = 10;
 const ROWS = 20;
 const BLOCK = 30;
 
-const COLORS = [
-  null,
-  '#4dd0e1', // I - cyan
-  '#ffd54f', // O - yellow
-  '#ba68c8', // T - purple
-  '#81c784', // S - green
-  '#e57373', // Z - red
-  '#90caf9', // J - pale blue
-  '#ffb74d', // L - orange
-  '#9e9e9e', // N - tuerca (gris metálico)
-];
 
 const PIECES = [
   null,
@@ -29,6 +18,130 @@ const PIECES = [
 ];
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
+
+// ---- Skin definitions ----
+const SKINS = {
+  retro: {
+    colors: [
+      null,
+      '#4dd0e1', '#ffd54f', '#ba68c8', '#81c784',
+      '#e57373', '#90caf9', '#ffb74d', '#9e9e9e',
+    ],
+    drawBlock(context, x, y, colorIndex, size, alpha) {
+      if (!colorIndex) return;
+      const color = this.colors[colorIndex];
+      context.globalAlpha = alpha ?? 1;
+      context.fillStyle = color;
+      context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.12)';
+      context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+      context.globalAlpha = 1;
+    },
+  },
+  neon: {
+    colors: [
+      null,
+      '#00fff5', '#ffe600', '#d400ff', '#00ff6a',
+      '#ff2d55', '#4db8ff', '#ff9500', '#c0c0c0',
+    ],
+    drawBlock(context, x, y, colorIndex, size, alpha) {
+      if (!colorIndex) return;
+      const color = this.colors[colorIndex];
+      const a = alpha ?? 1;
+      context.globalAlpha = a;
+      context.shadowBlur = 12;
+      context.shadowColor = color;
+      if (a >= 1) {
+        context.fillStyle = '#000';
+        context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+      }
+      context.fillStyle = color;
+      context.fillRect(x * size + 3, y * size + 3, size - 6, size - 6);
+      context.shadowBlur = 0;
+      context.shadowColor = 'transparent';
+      context.globalAlpha = 1;
+    },
+  },
+  pastel: {
+    colors: [
+      null,
+      '#a8e6cf', '#ffd3b6', '#d4a5c9', '#c8e6c9',
+      '#ffcdd2', '#bbdefb', '#ffe0b2', '#e0e0e0',
+    ],
+    drawBlock(context, x, y, colorIndex, size, alpha) {
+      if (!colorIndex) return;
+      const color = this.colors[colorIndex];
+      context.globalAlpha = alpha ?? 1;
+      const pad = 3;
+      const rx = x * size + pad;
+      const ry = y * size + pad;
+      const rw = size - pad * 2;
+      const rh = size - pad * 2;
+      const radius = 5;
+      context.beginPath();
+      context.moveTo(rx + radius, ry);
+      context.lineTo(rx + rw - radius, ry);
+      context.quadraticCurveTo(rx + rw, ry, rx + rw, ry + radius);
+      context.lineTo(rx + rw, ry + rh - radius);
+      context.quadraticCurveTo(rx + rw, ry + rh, rx + rw - radius, ry + rh);
+      context.lineTo(rx + radius, ry + rh);
+      context.quadraticCurveTo(rx, ry + rh, rx, ry + rh - radius);
+      context.lineTo(rx, ry + radius);
+      context.quadraticCurveTo(rx, ry, rx + radius, ry);
+      context.closePath();
+      context.fillStyle = color;
+      context.fill();
+      context.fillStyle = 'rgba(255,255,255,0.35)';
+      context.beginPath();
+      context.moveTo(rx + radius, ry);
+      context.lineTo(rx + rw - radius, ry);
+      context.quadraticCurveTo(rx + rw, ry, rx + rw, ry + radius);
+      context.lineTo(rx + rw, ry + radius);
+      context.lineTo(rx, ry + radius);
+      context.lineTo(rx, ry + radius);
+      context.quadraticCurveTo(rx, ry, rx + radius, ry);
+      context.closePath();
+      context.fill();
+      context.globalAlpha = 1;
+    },
+  },
+  pixel: {
+    colors: [
+      null,
+      '#4dd0e1', '#ffd54f', '#ba68c8', '#81c784',
+      '#e57373', '#90caf9', '#ffb74d', '#9e9e9e',
+    ],
+    drawBlock(context, x, y, colorIndex, size, alpha) {
+      if (!colorIndex) return;
+      const color = this.colors[colorIndex];
+      context.globalAlpha = alpha ?? 1;
+      context.fillStyle = color;
+      context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+      // pixel-art cross-hatch dots pattern
+      context.fillStyle = 'rgba(0,0,0,0.18)';
+      const dotSize = 2;
+      const step = Math.floor(size / 4);
+      for (let dr = 0; dr < 4; dr++) {
+        for (let dc = 0; dc < 4; dc++) {
+          if ((dr + dc) % 2 === 0) {
+            context.fillRect(
+              x * size + 1 + dc * step,
+              y * size + 1 + dr * step,
+              dotSize, dotSize
+            );
+          }
+        }
+      }
+      // light border highlight
+      context.fillStyle = 'rgba(255,255,255,0.20)';
+      context.fillRect(x * size + 1, y * size + 1, size - 2, 2);
+      context.fillRect(x * size + 1, y * size + 1, 2, size - 2);
+      context.globalAlpha = 1;
+    },
+  },
+};
+
+let activeSkin = SKINS.retro;
 
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
@@ -159,15 +272,7 @@ function updateHUD() {
 }
 
 function drawBlock(context, x, y, colorIndex, size, alpha) {
-  if (!colorIndex) return;
-  const color = COLORS[colorIndex];
-  context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
-  context.globalAlpha = 1;
+  activeSkin.drawBlock(context, x, y, colorIndex, size, alpha);
 }
 
 function drawGrid() {
@@ -322,6 +427,27 @@ function applyTheme(isLight) {
 
 const savedTheme = localStorage.getItem('tetris-theme');
 applyTheme(savedTheme === 'light');
+
+// ---- Skin selector ----
+const skinSelect = document.getElementById('skin-select');
+
+function applySkin(skinName) {
+  activeSkin = SKINS[skinName] || SKINS.retro;
+  if (skinSelect.value !== skinName) skinSelect.value = skinName;
+  if (typeof draw === 'function' && current) { draw(); drawNext(); }
+}
+
+const savedSkin = localStorage.getItem('tetris-skin');
+if (savedSkin && SKINS[savedSkin]) {
+  activeSkin = SKINS[savedSkin];
+  skinSelect.value = savedSkin;
+}
+
+skinSelect.addEventListener('change', () => {
+  const skinName = skinSelect.value;
+  applySkin(skinName);
+  localStorage.setItem('tetris-skin', skinName);
+});
 
 themeToggle.addEventListener('click', () => {
   const isLight = !document.body.classList.contains('light-mode');
