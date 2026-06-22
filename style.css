@@ -234,3 +234,93 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Pause menu ---- */
+.pause-menu-box {
+  gap: 10px;
+  min-width: 200px;
+}
+
+.pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+  margin-bottom: 4px;
+}
+
+.pause-menu-box button {
+  width: 100%;
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.pause-menu-box button:hover {
+  background: #9bbdff;
+}
+
+.controls-list {
+  width: 100%;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+
+.controls-list.hidden {
+  display: none;
+}
+
+.controls-list ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.controls-list li {
+  font-size: 12px;
+  color: var(--controls-text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.25s;
+}
+
+.start-level-section {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.start-level-section label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.start-level-section select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  flex: 1;
+}
