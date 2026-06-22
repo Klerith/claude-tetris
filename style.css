@@ -234,3 +234,168 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Start screen ---- */
+.start-title {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: #7aa2f7;
+  text-shadow: 0 0 20px rgba(122, 162, 247, 0.5);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.start-play-btn {
+  font-size: 18px;
+  padding: 12px 40px;
+  margin: 4px 0;
+}
+
+/* ---- Action buttons (Guardar, Jugar) ---- */
+.action-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+.action-btn:hover {
+  background: #9bbdff;
+}
+
+/* ---- Clear button ---- */
+.clear-btn {
+  background: transparent;
+  color: #e57373;
+  border: 1px solid #e57373;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.clear-btn:hover {
+  background: #e57373;
+  color: #0f0f17;
+}
+
+/* ---- Overlay stats (bestCombo, maxLines) ---- */
+.overlay-stats {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+}
+
+.overlay-stats.hidden {
+  display: none;
+}
+
+/* ---- High scores table ---- */
+.highscores-container {
+  width: 100%;
+  min-width: 220px;
+}
+
+.highscores-container.hidden {
+  display: none;
+}
+
+.highscores-title {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--label);
+  font-weight: 600;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.highscores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+}
+
+.highscores-table td {
+  padding: 3px 6px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.highscores-table td:first-child {
+  color: var(--label);
+  font-size: 11px;
+  width: 20px;
+}
+
+.highscores-table td:last-child {
+  text-align: right;
+  color: #7aa2f7;
+  font-weight: 700;
+}
+
+.highscores-table tr.hs-new td {
+  color: #ffd54f;
+  background: rgba(255, 213, 79, 0.08);
+}
+
+.highscores-table tr.hs-new td:last-child {
+  color: #ffd54f;
+}
+
+.highscores-table .hs-empty {
+  color: var(--label);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ---- Name entry ---- */
+.name-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.name-entry.hidden {
+  display: none;
+}
+
+.name-entry-label {
+  font-size: 12px;
+  color: #ffd54f;
+  letter-spacing: 0.5px;
+}
+
+.player-name-input {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  color: var(--text);
+  text-align: center;
+  outline: none;
+  width: 160px;
+  transition: border-color 0.15s;
+}
+
+.player-name-input:focus {
+  border-color: #7aa2f7;
+}
+

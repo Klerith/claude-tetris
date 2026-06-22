@@ -31,6 +31,11 @@
         </div>
 
         <div class="panel-section">
+          <span class="label">COMBO</span>
+          <span class="value" id="combo">0</span>
+        </div>
+
+        <div class="panel-section">
           <span class="label">NEXT</span>
           <canvas id="next-canvas" width="120" height="120"></canvas>
         </div>
@@ -48,11 +53,37 @@
       </aside>
     </div>
 
+    <!-- Game over / pause overlay -->
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="overlay-stats" class="overlay-stats hidden"></div>
+        <div id="name-entry" class="name-entry hidden">
+          <p class="name-entry-label">¡Nuevo récord! Ingresa tu nombre:</p>
+          <input type="text" id="player-name" class="player-name-input" maxlength="12" placeholder="Nombre" />
+          <button id="save-score-btn" class="action-btn">Guardar</button>
+        </div>
+        <div id="highscores-container" class="highscores-container hidden">
+          <p class="highscores-title">TOP 5</p>
+          <table id="highscores-table" class="highscores-table"></table>
+        </div>
+        <button id="clear-records-btn" class="clear-btn hidden">Borrar records</button>
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <!-- Start screen overlay -->
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-box">
+        <p class="start-title">TETRIS</p>
+        <button id="start-btn" class="action-btn start-play-btn">Jugar</button>
+        <div id="start-stats" class="overlay-stats"></div>
+        <div class="highscores-container">
+          <p class="highscores-title">TOP 5</p>
+          <table id="start-highscores-table" class="highscores-table"></table>
+        </div>
+        <button id="start-clear-btn" class="clear-btn">Borrar records</button>
       </div>
     </div>
   </div>
