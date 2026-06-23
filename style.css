@@ -234,3 +234,145 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+#restart-btn:disabled {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* ---- Name entry ---- */
+.name-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.name-entry.hidden { display: none; }
+
+.name-entry-label {
+  font-size: 12px;
+  color: var(--label);
+  letter-spacing: 0.5px;
+}
+
+.name-entry-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#player-name {
+  background: var(--canvas-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  color: var(--text);
+  width: 120px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#player-name:focus {
+  border-color: #7aa2f7;
+}
+
+#save-score-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover { background: #9bbdff; }
+
+/* ---- Scores section (overlay) ---- */
+.scores-section {
+  width: 100%;
+}
+
+.scores-section.hidden { display: none; }
+
+.scores-title {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--label);
+  margin-bottom: 6px;
+}
+
+#scores-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+
+#scores-table th {
+  color: var(--label);
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 3px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+#scores-table td {
+  padding: 3px 6px;
+  color: var(--text);
+}
+
+#scores-table tr.hs-highlight td {
+  color: #ffd54f;
+  font-weight: 700;
+}
+
+.best-stats {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: var(--label);
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+}
+
+#reset-scores-btn {
+  margin-top: 8px;
+  background: transparent;
+  color: #e57373;
+  border: 1px solid #e57373;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+#reset-scores-btn:hover {
+  background: rgba(229, 115, 115, 0.15);
+}
+
+/* ---- Sidebar scores ---- */
+.sidebar-scores-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0;
+}
+
+.sidebar-scores-list li {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #7aa2f7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
