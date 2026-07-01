@@ -86,6 +86,29 @@ body {
   font-size: 15px;
 }
 
+.skin-select {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--toggle-bg);
+  border: 1px solid var(--toggle-border);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 13px;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--toggle-text);
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.skin-select:hover,
+.skin-select:focus {
+  border-color: #7aa2f7;
+  color: #7aa2f7;
+  outline: none;
+}
+
 .game-title {
   font-family: 'Courier New', Courier, monospace;
   font-size: 36px;
