@@ -55,6 +55,24 @@
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
+
+    <div id="records-panel" class="records-panel">
+      <div class="records-header">
+        <span class="label">RECORDS</span>
+        <button id="reset-records-btn" class="reset-records-btn" type="button" title="Reiniciar records">&#8634;</button>
+      </div>
+      <div id="records-list" class="records-list"></div>
+      <div class="records-stats">
+        <div class="records-stat"><span class="label">COMBO</span><span id="best-combo" class="records-stat-val">0</span></div>
+        <div class="records-stat"><span class="label">LÍNEAS MÁX</span><span id="max-lines" class="records-stat-val">0</span></div>
+      </div>
+    </div>
+
+    <div id="name-entry" class="name-entry hidden">
+      <p id="name-entry-title" class="name-entry-title">¡Nuevo record!</p>
+      <input id="name-input" class="name-input" type="text" maxlength="12" placeholder="Nombre" autocomplete="off" />
+      <button id="save-record-btn" class="save-record-btn" type="button">Guardar</button>
+    </div>
   </div>
 
   <script src="game.js"></script>
