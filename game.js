@@ -230,16 +230,15 @@ function endGame() {
 
 function togglePause() {
   if (gameOver) return;
-  paused = !paused;
-  if (!paused) {
-    lastTime = performance.now();
-    loop(lastTime);
-  } else {
-    cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
-  }
+  if (menuOpen) { closePauseMenu(); return; }
+  paused = true;
+  menuOpen = true;
+  cancelAnimationFrame(animId);
+  overlayBox.classList.add('hidden');
+  pauseMenu.classList.remove('hidden');
+  pauseControls.classList.add('hidden');
+  pauseControlsBtn.textContent = 'Ver controles';
+  overlay.classList.remove('hidden');
 }
 
 function loop(ts) {
@@ -275,11 +274,29 @@ function init() {
   overlay.classList.add('hidden');
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
+  // === U1: menú de pausa (append a init) ===
+  menuOpen = false;
+  {
+    const savedLv = parseInt(localStorage.getItem('tetris-initial-level'), 10);
+    if (Number.isInteger(savedLv) && savedLv >= 1 && savedLv <= 15) {
+      level = savedLv;
+    }
+  }
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+  const pm = document.getElementById('pause-menu');
+  if (pm) pm.classList.add('hidden');
+  const ob = document.querySelector('.overlay-box');
+  if (ob) ob.classList.remove('hidden');
+  const pc = document.getElementById('pause-controls');
+  if (pc) pc.classList.add('hidden');
+  updateHUD();
 }
 
 document.addEventListener('keydown', e => {
   if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'Escape') { togglePause(); return; }
   if (paused || gameOver) return;
+  if (menuOpen) return;
   switch (e.code) {
     case 'ArrowLeft':
       if (!collide(current.shape, current.x - 1, current.y)) current.x--;
@@ -330,3 +347,65 @@ themeToggle.addEventListener('click', () => {
 });
 
 init();
+
+// === U1: menú de pausa ===
+var menuOpen = false;
+var initialLevel = 1;
+const MIN_LEVEL = 1;
+const MAX_LEVEL = 15;
+const LS_INITIAL_LEVEL = 'tetris-initial-level';
+
+const pauseMenu = document.getElementById('pause-menu');
+const pauseResumeBtn = document.getElementById('pause-resume');
+const pauseRestartBtn = document.getElementById('pause-restart');
+const pauseControlsBtn = document.getElementById('pause-controls-btn');
+const pauseControls = document.getElementById('pause-controls');
+const pauseLevelSelect = document.getElementById('pause-level-select');
+const overlayBox = document.querySelector('.overlay-box');
+
+for (let lv = MIN_LEVEL; lv <= MAX_LEVEL; lv++) {
+  const opt = document.createElement('option');
+  opt.value = String(lv);
+  opt.textContent = String(lv);
+  pauseLevelSelect.appendChild(opt);
+}
+
+{
+  const saved = parseInt(localStorage.getItem(LS_INITIAL_LEVEL), 10);
+  if (Number.isInteger(saved) && saved >= MIN_LEVEL && saved <= MAX_LEVEL) {
+    initialLevel = saved;
+  }
+  pauseLevelSelect.value = String(initialLevel);
+}
+
+pauseLevelSelect.addEventListener('change', () => {
+  const lv = parseInt(pauseLevelSelect.value, 10);
+  if (Number.isInteger(lv) && lv >= MIN_LEVEL && lv <= MAX_LEVEL) {
+    initialLevel = lv;
+    localStorage.setItem(LS_INITIAL_LEVEL, String(lv));
+  }
+});
+
+function closePauseMenu() {
+  if (!menuOpen) return;
+  menuOpen = false;
+  paused = false;
+  pauseMenu.classList.add('hidden');
+  overlayBox.classList.remove('hidden');
+  pauseControls.classList.add('hidden');
+  overlay.classList.add('hidden');
+  lastTime = performance.now();
+  loop(lastTime);
+}
+
+pauseResumeBtn.addEventListener('click', closePauseMenu);
+pauseRestartBtn.addEventListener('click', () => { init(); });
+pauseControlsBtn.addEventListener('click', () => {
+  if (pauseControls.classList.contains('hidden')) {
+    pauseControls.classList.remove('hidden');
+    pauseControlsBtn.textContent = 'Ocultar controles';
+  } else {
+    pauseControls.classList.add('hidden');
+    pauseControlsBtn.textContent = 'Ver controles';
+  }
+});
