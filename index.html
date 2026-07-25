@@ -54,6 +54,27 @@
         <p id="overlay-score"></p>
         <button id="restart-btn">Reiniciar</button>
       </div>
+
+      <div id="pause-menu" class="hidden">
+        <p id="pause-menu-title">PAUSA</p>
+        <button class="pause-btn" id="pause-resume">Reanudar</button>
+        <button class="pause-btn" id="pause-restart">Reiniciar</button>
+        <button class="pause-btn" id="pause-controls-btn">Ver controles</button>
+        <div id="pause-controls" class="hidden">
+          <p class="pause-controls-title">Controles</p>
+          <ul>
+            <li><kbd>&larr;</kbd><kbd>&rarr;</kbd> mover</li>
+            <li><kbd>&uarr;</kbd> / <kbd>X</kbd> rotar</li>
+            <li><kbd>&darr;</kbd> bajar</li>
+            <li><kbd>Space</kbd> caída</li>
+            <li><kbd>P</kbd> pausa</li>
+          </ul>
+        </div>
+        <div id="pause-level">
+          <label for="pause-level-select">Nivel inicial</label>
+          <select id="pause-level-select"></select>
+        </div>
+      </div>
     </div>
   </div>
 
