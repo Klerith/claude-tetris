@@ -232,15 +232,81 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    hidePauseMenu();
+    // Reinicia el reloj: sin esto el dt acumulado durante la pausa provocaría
+    // una caída instantánea de varias filas al reanudar.
     lastTime = performance.now();
+    dropAccum = 0;
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    showPauseMenu();
   }
 }
+
+/* ---- Menú de pausa ---- */
+const pauseMenu = document.getElementById('pause-menu');
+const pauseResumeBtn = document.getElementById('pause-resume');
+const pauseRestartBtn = document.getElementById('pause-restart');
+const pauseControlsBtn = document.getElementById('pause-controls-btn');
+const pauseControlsList = document.getElementById('pause-controls-list');
+const pauseLevelSelect = document.getElementById('pause-level-select');
+
+const MAX_START_LEVEL = 15;
+
+// Nivel inicial guardado, saneado al rango 1-MAX_START_LEVEL.
+function startLevel() {
+  const saved = parseInt(localStorage.getItem('tetris-start-level'), 10);
+  if (!Number.isFinite(saved)) return 1;
+  return Math.min(MAX_START_LEVEL, Math.max(1, saved));
+}
+
+function showPauseMenu() {
+  pauseLevelSelect.value = startLevel();
+  pauseMenu.classList.remove('hidden');
+  // Se enfoca el contenedor, no un botón: así Space/Enter no activan nada por
+  // accidente y las teclas quedan atrapadas por el listener del menú.
+  pauseMenu.focus();
+}
+
+function hidePauseMenu() {
+  pauseMenu.classList.add('hidden');
+  pauseControlsList.classList.add('hidden');
+  pauseControlsBtn.textContent = 'Ver controles';
+  pauseControlsBtn.setAttribute('aria-expanded', 'false');
+  // Quita el foco de los botones del menú: si no, la siguiente pulsación de
+  // Space/Enter volvería a activarlos en lugar de jugar.
+  if (pauseMenu.contains(document.activeElement)) document.activeElement.blur();
+}
+
+// Rellena el selector 1-MAX_START_LEVEL con el valor guardado.
+for (let lvl = 1; lvl <= MAX_START_LEVEL; lvl++) {
+  const option = document.createElement('option');
+  option.value = lvl;
+  option.textContent = lvl;
+  pauseLevelSelect.appendChild(option);
+}
+pauseLevelSelect.value = startLevel();
+
+pauseResumeBtn.addEventListener('click', () => { if (paused) togglePause(); });
+pauseRestartBtn.addEventListener('click', init);
+
+pauseControlsBtn.addEventListener('click', () => {
+  const visible = pauseControlsList.classList.toggle('hidden') === false;
+  pauseControlsBtn.textContent = visible ? 'Ocultar controles' : 'Ver controles';
+  pauseControlsBtn.setAttribute('aria-expanded', String(visible));
+});
+
+pauseLevelSelect.addEventListener('change', () => {
+  localStorage.setItem('tetris-start-level', pauseLevelSelect.value);
+});
+
+// Bloqueo de entrada: las teclas usadas dentro del menú (Enter, Space, flechas
+// del selector...) no deben llegar al handler global y mover la pieza.
+pauseMenu.addEventListener('keydown', e => {
+  if (e.code === 'KeyP' || e.code === 'Escape') return; // los gestiona el handler global
+  e.stopPropagation();
+});
 
 function loop(ts) {
   const dt = ts - lastTime;
@@ -262,23 +328,28 @@ function loop(ts) {
 function init() {
   board = createBoard();
   score = 0;
-  lines = 0;
-  level = 1;
+  level = startLevel();
+  // El nivel inicial se siembra como base de líneas porque clearLines() deriva
+  // `level` de `lines` con la fórmula existente; sin la base, el nivel elegido
+  // se perdería en la primera línea completada.
+  lines = (level - 1) * 10;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  hidePauseMenu();
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
+  // Con el menú de pausa abierto no se procesa ninguna tecla de juego.
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
