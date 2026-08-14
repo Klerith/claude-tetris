@@ -41,3 +41,7 @@ Three files, no framework, no bundler:
 ## Tunable constants (top of game.js)
 
 `COLS` (10), `ROWS` (20), `BLOCK` (30 px), `COLORS` (array indexed 1–7), `LINE_SCORES`. If you change `COLS`/`ROWS`/`BLOCK`, update the canvas `width`/`height` attributes in `index.html` to match (`COLS×BLOCK` and `ROWS×BLOCK`).
+
+## Visual skins
+
+`SKINS` (`game.js`, next to `COLORS`) maps `retro | neon | pastel | pixel` to a `colors` palette (same index layout as `COLORS`) plus per-skin extras (`glow` for neon, `patternShade` for pixel). `drawBlock()` dispatches to `drawBlockRetro/Neon/Pastel/Pixel()` based on `currentSkin`, keeping its `(context, x, y, colorIndex, size, alpha)` signature unchanged so `draw()` and `drawNext()` don't need to know about skins. The `#skin-select` dropdown (sidebar) calls `applySkin()`, which sets `currentSkin`, toggles `body.skin-neon|skin-pastel|skin-pixel` (for `--canvas-bg`/`--grid-line`/`--border` overrides in `style.css`, composing with `body.light-mode`), persists to `localStorage['tetris-skin']`, and re-renders both canvases immediately.
