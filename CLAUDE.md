@@ -41,3 +41,13 @@ Three files, no framework, no bundler:
 ## Tunable constants (top of game.js)
 
 `COLS` (10), `ROWS` (20), `BLOCK` (30 px), `COLORS` (array indexed 1–7), `LINE_SCORES`. If you change `COLS`/`ROWS`/`BLOCK`, update the canvas `width`/`height` attributes in `index.html` to match (`COLS×BLOCK` and `ROWS×BLOCK`).
+
+## High scores and start screen
+
+**Behavior change:** the game no longer auto-starts on page load. A start overlay (`#start-overlay`, `index.html`) shows the top-5 record table and a JUGAR button; clicking it calls `init()`.
+
+- `localStorage['tetris-highscores']` — JSON array (max 5) of `{ name, score, lines, level, combo, date }`, sorted descending by score.
+- `localStorage['tetris-stats']` — `{ bestCombo, maxLines }`, updated on every game regardless of whether it made the top 5.
+- Combo tracking (`combo`/`maxCombo` globals) lives in `lockPiece()`: increments when `clearLines()` clears ≥1 line in that lock, resets to 0 otherwise.
+- `endGame()` calls `updateStats()` then `showHighScoreEntry()`, which shows a name input (default `AAA`) only if the score qualifies for the top 5.
+- "Borrar records" button on the start screen clears both keys after a `confirm()`.

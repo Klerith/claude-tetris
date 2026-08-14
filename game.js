@@ -43,6 +43,7 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let combo, maxCombo;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -112,6 +113,7 @@ function clearLines() {
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
+  return cleared;
 }
 
 function ghostY() {
@@ -139,7 +141,13 @@ function softDrop() {
 
 function lockPiece() {
   merge();
-  clearLines();
+  const cleared = clearLines();
+  if (cleared > 0) {
+    combo++;
+    if (combo > maxCombo) maxCombo = combo;
+  } else {
+    combo = 0;
+  }
   spawn();
 }
 
@@ -225,6 +233,8 @@ function endGame() {
   cancelAnimationFrame(animId);
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
+  updateStats();
+  showHighScoreEntry();
   overlay.classList.remove('hidden');
 }
 
@@ -268,11 +278,15 @@ function init() {
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
+  combo = 0;
+  maxCombo = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  highscoreEntry.classList.add('hidden');
+  overlayRecords.innerHTML = '';
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
@@ -329,4 +343,155 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
 });
 
-init();
+// ---------------------------------------------------------------------
+// High-score table, stats, and start screen (localStorage-persisted)
+// ---------------------------------------------------------------------
+
+const HIGHSCORES_KEY = 'tetris-highscores';
+const STATS_KEY = 'tetris-stats';
+const MAX_HIGHSCORES = 5;
+
+const overlayRecords = document.getElementById('overlay-records');
+const highscoreEntry = document.getElementById('highscore-entry');
+const nameInput = document.getElementById('name-input');
+const saveScoreBtn = document.getElementById('save-score-btn');
+const startOverlay = document.getElementById('start-overlay');
+const startRecords = document.getElementById('start-records');
+const playBtn = document.getElementById('play-btn');
+const clearRecordsBtn = document.getElementById('clear-records-btn');
+
+function loadHighScores() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(HIGHSCORES_KEY));
+    return Array.isArray(raw) ? raw : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHighScores(list) {
+  localStorage.setItem(HIGHSCORES_KEY, JSON.stringify(list));
+}
+
+function loadStats() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(STATS_KEY));
+    return raw && typeof raw === 'object'
+      ? { bestCombo: raw.bestCombo || 0, maxLines: raw.maxLines || 0 }
+      : { bestCombo: 0, maxLines: 0 };
+  } catch {
+    return { bestCombo: 0, maxLines: 0 };
+  }
+}
+
+function saveStats(stats) {
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+// Updates tetris-stats for every game played, independent of whether the
+// score itself qualifies for the top-5 table.
+function updateStats() {
+  const stats = loadStats();
+  let changed = false;
+  if (maxCombo > stats.bestCombo) {
+    stats.bestCombo = maxCombo;
+    changed = true;
+  }
+  if (lines > stats.maxLines) {
+    stats.maxLines = lines;
+    changed = true;
+  }
+  if (changed) saveStats(stats);
+}
+
+function qualifiesForHighScore(candidateScore) {
+  const scores = loadHighScores();
+  return scores.length < MAX_HIGHSCORES || candidateScore > scores[scores.length - 1].score;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function renderRecordsTable(container, scores, highlightIndex) {
+  if (!scores.length) {
+    container.innerHTML = '<p class="no-records">Sin récords todavía</p>';
+    return;
+  }
+  const rows = scores
+    .map((entry, i) => `
+      <tr class="${i === highlightIndex ? 'highlight' : ''}">
+        <td>${i + 1}</td>
+        <td>${escapeHtml(entry.name)}</td>
+        <td>${entry.score.toLocaleString()}</td>
+        <td>${entry.lines}</td>
+        <td>${entry.level}</td>
+        <td>${entry.combo}</td>
+      </tr>`)
+    .join('');
+  container.innerHTML = `
+    <table class="records-table">
+      <thead>
+        <tr><th>#</th><th>Nombre</th><th>Score</th><th>Líneas</th><th>Nivel</th><th>Combo</th></tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function showHighScoreEntry() {
+  const qualifies = qualifiesForHighScore(score);
+  if (qualifies) {
+    highscoreEntry.classList.remove('hidden');
+    nameInput.value = 'AAA';
+    nameInput.focus();
+    nameInput.select();
+  } else {
+    highscoreEntry.classList.add('hidden');
+  }
+  renderRecordsTable(overlayRecords, loadHighScores(), -1);
+}
+
+function saveHighScoreEntry() {
+  const name = (nameInput.value.trim() || 'AAA').slice(0, 8).toUpperCase();
+  const scores = loadHighScores();
+  const entry = {
+    name,
+    score,
+    lines,
+    level,
+    combo: maxCombo,
+    date: new Date().toISOString().slice(0, 10),
+  };
+  scores.push(entry);
+  scores.sort((a, b) => b.score - a.score);
+  if (scores.length > MAX_HIGHSCORES) scores.length = MAX_HIGHSCORES;
+  saveHighScores(scores);
+  const highlightIndex = scores.indexOf(entry);
+  renderRecordsTable(overlayRecords, scores, highlightIndex);
+  highscoreEntry.classList.add('hidden');
+}
+
+function renderStartScreen() {
+  renderRecordsTable(startRecords, loadHighScores(), -1);
+}
+
+saveScoreBtn.addEventListener('click', saveHighScoreEntry);
+
+playBtn.addEventListener('click', () => {
+  startOverlay.classList.add('hidden');
+  init();
+});
+
+clearRecordsBtn.addEventListener('click', () => {
+  if (confirm('¿Borrar todos los récords y estadísticas?')) {
+    localStorage.removeItem(HIGHSCORES_KEY);
+    localStorage.removeItem(STATS_KEY);
+    renderStartScreen();
+  }
+});
+
+// Game no longer auto-starts: the start screen (rendered above) shows the
+// top-5 table and wires the JUGAR button to call init().
+renderStartScreen();
