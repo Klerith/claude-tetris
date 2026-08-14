@@ -42,17 +42,44 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd> / <kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
       </aside>
     </div>
 
     <div id="overlay" class="overlay hidden">
-      <div class="overlay-box">
+      <div id="gameover-view" class="overlay-box hidden">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
         <button id="restart-btn">Reiniciar</button>
+      </div>
+
+      <div id="pause-menu" class="overlay-box hidden">
+        <p class="pause-title">PAUSA</p>
+
+        <div class="pause-options">
+          <button id="resume-btn" class="menu-btn">Reanudar</button>
+          <button id="menu-restart-btn" class="menu-btn">Reiniciar</button>
+          <button id="toggle-controls-btn" class="menu-btn">Ver controles</button>
+        </div>
+
+        <ul id="pause-controls-list" class="controls pause-controls-list hidden">
+          <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+          <li><kbd>↑</kbd> rotar</li>
+          <li><kbd>↓</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>P</kbd> / <kbd>Esc</kbd> pausa</li>
+        </ul>
+
+        <div class="start-level-picker">
+          <span class="label">NIVEL INICIAL</span>
+          <div class="stepper">
+            <button id="level-dec-btn" class="stepper-btn" type="button">−</button>
+            <select id="start-level-select"></select>
+            <button id="level-inc-btn" class="stepper-btn" type="button">+</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

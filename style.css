@@ -196,6 +196,11 @@ kbd {
   display: none;
 }
 
+#gameover-view.hidden,
+#pause-menu.hidden {
+  display: none;
+}
+
 .overlay-box {
   text-align: center;
   display: flex;
@@ -233,4 +238,113 @@ kbd {
 
 #restart-btn:hover {
   background: #9bbdff;
+}
+
+/* ==== Menú de pausa ==== */
+#pause-menu {
+  width: 220px;
+  padding: 20px;
+}
+
+.pause-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+}
+
+.pause-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.menu-btn {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--toggle-border);
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.menu-btn:hover {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border-color: #7aa2f7;
+}
+
+#resume-btn {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border-color: #7aa2f7;
+}
+
+#resume-btn:hover {
+  background: #9bbdff;
+}
+
+.pause-controls-list {
+  width: 100%;
+  padding: 10px 4px 0;
+  border-top: 1px solid var(--border);
+}
+
+.pause-controls-list.hidden {
+  display: none;
+}
+
+.pause-controls-list li {
+  justify-content: center;
+}
+
+.start-level-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepper-btn {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.stepper-btn:hover {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border-color: #7aa2f7;
+}
+
+#start-level-select {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 5px 8px;
+  font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
+  cursor: pointer;
 }
