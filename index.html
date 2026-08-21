@@ -52,7 +52,55 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+
+        <div id="name-entry" class="name-entry hidden">
+          <label class="label" for="name-input">¡Nuevo récord! Escribe tu nombre:</label>
+          <div class="name-entry-row">
+            <input id="name-input" type="text" maxlength="12" autocomplete="off" spellcheck="false" />
+            <button id="save-score-btn">Guardar</button>
+          </div>
+        </div>
+
+        <div id="gameover-hs" class="highscore-panel hidden">
+          <p class="hs-title">MEJORES PUNTUACIONES</p>
+          <table class="hs-table"><tbody id="gameover-hs-body"></tbody></table>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="label">MEJOR COMBO</span>
+              <span class="stat-value" id="gameover-best-combo">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="label">MÁX. LÍNEAS</span>
+              <span class="stat-value" id="gameover-max-lines">0</span>
+            </div>
+          </div>
+        </div>
+
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-box">
+        <p id="start-title">TETRIS</p>
+
+        <div class="highscore-panel">
+          <p class="hs-title">MEJORES PUNTUACIONES</p>
+          <table class="hs-table"><tbody id="start-hs-body"></tbody></table>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="label">MEJOR COMBO</span>
+              <span class="stat-value" id="start-best-combo">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="label">MÁX. LÍNEAS</span>
+              <span class="stat-value" id="start-max-lines">0</span>
+            </div>
+          </div>
+          <button id="reset-scores-btn" class="secondary-btn">Borrar récords</button>
+        </div>
+
+        <button id="start-btn">Jugar</button>
       </div>
     </div>
   </div>
