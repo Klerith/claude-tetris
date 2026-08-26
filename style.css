@@ -91,8 +91,8 @@ body {
   font-size: 36px;
   font-weight: 900;
   letter-spacing: 10px;
-  color: #7aa2f7;
-  text-shadow: 0 0 20px rgba(122, 162, 247, 0.5);
+  color: #ff3b3b;
+  text-shadow: 0 0 20px rgba(255, 59, 59, 0.5);
   text-transform: uppercase;
   margin: 0;
 }
@@ -217,7 +217,9 @@ kbd {
   color: #7aa2f7;
 }
 
-#restart-btn {
+#restart-btn,
+.pause-panel button,
+.controls-panel button {
   margin-top: 8px;
   background: #7aa2f7;
   color: #0f0f17;
@@ -231,6 +233,190 @@ kbd {
   transition: background 0.15s;
 }
 
-#restart-btn:hover {
+#restart-btn:hover,
+.pause-panel button:hover,
+.controls-panel button:hover {
   background: #9bbdff;
+}
+
+/* ---- Menú de pausa ---- */
+.pause-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  min-width: 200px;
+}
+
+.start-level-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.start-level-field label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--label);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.start-level-field select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+/* ---- Panel de controles (dentro del menú de pausa) ---- */
+.controls-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  min-width: 200px;
+}
+
+.controls-panel ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.controls-panel li {
+  font-size: 13px;
+  color: var(--controls-text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.25s;
+}
+
+/* ---- Records / highscores ---- */
+#highscore-list,
+#gameover-highscore-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--text);
+}
+
+#highscore-list li,
+#gameover-highscore-list li {
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.2s, color 0.2s;
+}
+
+#highscore-list:empty::before {
+  content: '—';
+  color: var(--label);
+  font-size: 12px;
+}
+
+.new-record {
+  background: rgba(122, 162, 247, 0.18);
+  color: #7aa2f7;
+  font-weight: 700;
+  border: 1px solid #7aa2f7;
+}
+
+#player-name-input {
+  margin-top: 8px;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+  text-align: center;
+  width: 180px;
+}
+
+#player-name-input:focus {
+  outline: none;
+  border-color: #7aa2f7;
+}
+
+#save-score-btn {
+  margin-top: 4px;
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover {
+  background: #9bbdff;
+}
+
+#reset-scores-btn {
+  background: transparent;
+  color: var(--label);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+#reset-scores-btn:hover {
+  color: #e57373;
+  border-color: #e57373;
+}
+
+/* ---- Skin selector ---- */
+#skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--kbd-text);
+  cursor: pointer;
+}
+
+/* ---- Skins ---- */
+body.skin-neon #board,
+body.skin-neon #next-canvas {
+  background: #000;
+  box-shadow: 0 0 30px rgba(125, 180, 255, 0.35);
+}
+
+body.skin-pastel #board,
+body.skin-pastel #next-canvas {
+  border-radius: 14px;
+}
+
+body.skin-pixel #board,
+body.skin-pixel #next-canvas {
+  image-rendering: pixelated;
+}
+
+/* Utilidad genérica de visibilidad. Declarada al final para que gane
+   frente a reglas de igual especificidad (ej. `.pause-panel`,
+   `.controls-panel`) que definan su propio `display`. */
+.hidden {
+  display: none;
 }

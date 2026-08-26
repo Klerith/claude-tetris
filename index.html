@@ -45,14 +45,76 @@
             <li><kbd>P</kbd> pausa</li>
           </ul>
         </div>
+
+        <div class="panel-section">
+          <span class="label">RECORDS</span>
+          <ol id="highscore-list"></ol>
+        </div>
+        <div class="panel-section">
+          <span class="label">MEJOR COMBO</span>
+          <span class="value" id="best-combo">0</span>
+        </div>
+        <div class="panel-section">
+          <span class="label">LÍNEAS MÁX</span>
+          <span class="value" id="best-lines">0</span>
+        </div>
+        <div class="panel-section">
+          <button id="reset-scores-btn">Resetear records</button>
+        </div>
+
+        <div class="panel-section">
+          <span class="label">SKIN</span>
+          <select id="skin-select">
+            <option value="retro">Retro</option>
+            <option value="neon">Neon</option>
+            <option value="pastel">Pastel</option>
+            <option value="pixel">Pixel Art</option>
+          </select>
+        </div>
       </aside>
     </div>
 
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
-        <p id="overlay-title">GAME OVER</p>
-        <p id="overlay-score"></p>
-        <button id="restart-btn">Reiniciar</button>
+        <div class="gameover-panel">
+          <p id="overlay-title">GAME OVER</p>
+          <p id="overlay-score"></p>
+          <input id="player-name-input" maxlength="12" placeholder="Tu nombre" class="hidden">
+          <button id="save-score-btn" class="hidden">Guardar</button>
+          <ol id="gameover-highscore-list"></ol>
+          <button id="restart-btn">Reiniciar</button>
+        </div>
+
+        <div class="pause-panel hidden">
+          <button id="resume-btn">Reanudar</button>
+          <button id="pause-restart-btn">Reiniciar</button>
+          <button id="show-controls-btn">Ver controles</button>
+          <div class="start-level-field">
+            <label for="start-level-select">Nivel inicial</label>
+            <select id="start-level-select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="controls-panel hidden">
+          <ul>
+            <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+            <li><kbd>↑</kbd> rotar</li>
+            <li><kbd>↓</kbd> bajar</li>
+            <li><kbd>Space</kbd> caída</li>
+            <li><kbd>P</kbd> / <kbd>Esc</kbd> pausa</li>
+          </ul>
+          <button id="back-to-pause-btn">Volver</button>
+        </div>
       </div>
     </div>
   </div>
