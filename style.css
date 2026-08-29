@@ -179,6 +179,25 @@ kbd {
   transition: background 0.25s, color 0.25s, border-color 0.25s;
 }
 
+/* ---- Skin selector ---- */
+#skin-select {
+  background: var(--kbd-bg);
+  color: var(--kbd-text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+#skin-select:hover,
+#skin-select:focus {
+  border-color: #7aa2f7;
+  outline: none;
+}
+
 /* ---- Overlay ---- */
 .overlay {
   position: absolute;
