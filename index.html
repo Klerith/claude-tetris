@@ -30,6 +30,17 @@
           <span class="value" id="level">1</span>
         </div>
 
+        <div class="panel-section" id="hold-section">
+          <span class="label">HOLD</span>
+          <canvas id="hold-canvas" width="120" height="120"></canvas>
+        </div>
+
+        <div class="panel-section" id="energy-section">
+          <span class="label">ENERGÍA</span>
+          <div class="energy-bar"><div class="energy-fill" id="energy-fill"></div></div>
+          <span class="energy-hint">Pulsa <kbd>E</kbd></span>
+        </div>
+
         <div class="panel-section">
           <span class="label">NEXT</span>
           <canvas id="next-canvas" width="120" height="120"></canvas>
@@ -42,10 +53,41 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
+            <li><kbd>C</kbd> reservar</li>
+            <li><kbd>E</kbd> habilidad</li>
             <li><kbd>P</kbd> pausa</li>
           </ul>
         </div>
       </aside>
+    </div>
+
+    <div id="ability-overlay" class="overlay hidden">
+      <div class="overlay-box ability-box">
+        <p class="ability-title">ELIGE UNA HABILIDAD</p>
+        <div id="ability-grid" class="ability-grid">
+          <button class="ability-card" data-ability="preview">
+            <span class="ability-icon">👁</span>
+            <span class="ability-name">Ver siguientes 5</span>
+            <span class="ability-desc">Muestra las próximas 5 piezas durante 5 turnos.</span>
+          </button>
+          <button class="ability-card" data-ability="swap">
+            <span class="ability-icon">🔄</span>
+            <span class="ability-name">Intercambiar pieza</span>
+            <span class="ability-desc">Cambia la pieza actual por otra distinta al azar.</span>
+          </button>
+          <button class="ability-card" data-ability="slow">
+            <span class="ability-icon">🐌</span>
+            <span class="ability-name">Ralentizar 10s</span>
+            <span class="ability-desc">Reduce la velocidad de caída durante 10 segundos.</span>
+          </button>
+          <button class="ability-card" data-ability="undo">
+            <span class="ability-icon">↩</span>
+            <span class="ability-name">Deshacer colocación</span>
+            <span class="ability-desc">Revierte tu última pieza colocada.</span>
+          </button>
+        </div>
+        <p class="ability-hint"><kbd>Esc</kbd> para cancelar</p>
+      </div>
     </div>
 
     <div id="overlay" class="overlay hidden">

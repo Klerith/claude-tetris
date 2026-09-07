@@ -143,12 +143,128 @@ body {
   letter-spacing: 1px;
 }
 
-#next-canvas {
+#next-canvas,
+#hold-canvas {
   display: block;
   border: 1px solid var(--border);
   background: var(--canvas-bg);
   border-radius: 4px;
   transition: background 0.25s, border-color 0.25s;
+}
+
+/* ---- Hold ---- */
+#hold-section #hold-canvas {
+  transition: opacity 0.2s, filter 0.2s, background 0.25s, border-color 0.25s;
+}
+
+#hold-section.locked #hold-canvas {
+  opacity: 0.35;
+  filter: grayscale(1);
+}
+
+/* ---- Barra de energía ---- */
+.energy-bar {
+  width: 120px;
+  height: 12px;
+  border: 1px solid var(--border);
+  background: var(--canvas-bg);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+
+.energy-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4a6bd8, #7aa2f7);
+  transition: width 0.3s ease-out;
+}
+
+#energy-section.ready .energy-bar {
+  box-shadow: 0 0 12px rgba(122, 162, 247, 0.9);
+  animation: energy-pulse 1s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes energy-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(122, 162, 247, 0.6); }
+  50% { box-shadow: 0 0 16px rgba(122, 162, 247, 1); }
+}
+
+.energy-hint {
+  font-size: 11px;
+  color: #7aa2f7;
+  letter-spacing: 1px;
+  visibility: hidden;
+}
+
+#energy-section.ready .energy-hint {
+  visibility: visible;
+}
+
+/* ---- Overlay de habilidades ---- */
+.ability-box {
+  max-width: 420px;
+}
+
+.ability-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #7aa2f7;
+}
+
+.ability-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ability-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 12px;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.ability-card:hover:not(:disabled) {
+  border-color: #7aa2f7;
+  transform: translateY(-2px);
+}
+
+.ability-card:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ability-icon {
+  font-size: 24px;
+}
+
+.ability-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #7aa2f7;
+}
+
+.ability-desc {
+  font-size: 11px;
+  color: var(--controls-text);
+  line-height: 1.35;
+}
+
+.ability-hint {
+  font-size: 11px;
+  color: var(--controls-text);
+  letter-spacing: 1px;
 }
 
 /* ---- Controles ---- */
