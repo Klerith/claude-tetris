@@ -54,6 +54,42 @@
         <p id="overlay-score"></p>
         <button id="restart-btn">Reiniciar</button>
       </div>
+
+      <div id="pause-menu" class="pause-menu hidden">
+        <div id="pause-main-view" class="pause-view">
+          <p class="pause-title">PAUSA</p>
+          <button id="pause-resume-btn">Reanudar</button>
+          <button id="pause-restart-btn">Reiniciar</button>
+          <button id="pause-controls-btn">Ver controles</button>
+          <div class="pause-level-row">
+            <label for="pause-level-select">Nivel inicial</label>
+            <select id="pause-level-select">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="pause-controls-view" class="pause-view hidden">
+          <p class="pause-title">CONTROLES</p>
+          <ul class="pause-controls-list">
+            <li><kbd>&#8592;</kbd><kbd>&#8594;</kbd> mover</li>
+            <li><kbd>&#8593;</kbd>/<kbd>X</kbd> rotar</li>
+            <li><kbd>&#8595;</kbd> bajar</li>
+            <li><kbd>Space</kbd> ca&iacute;da</li>
+            <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
+          </ul>
+          <button id="pause-back-btn">Volver</button>
+        </div>
+      </div>
     </div>
   </div>
 
