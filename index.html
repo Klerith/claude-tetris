@@ -52,7 +52,51 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+
+        <div id="records-gameover-panel" class="records-panel records-hidden">
+          <div id="records-name-form" class="records-name-form records-hidden">
+            <p class="records-heading">¡Nueva puntuación en el TOP 5!</p>
+            <input id="records-name-input" type="text" maxlength="12" placeholder="Tu nombre" autocomplete="off" />
+            <button id="records-save-btn">Guardar</button>
+          </div>
+
+          <p class="records-heading">MEJORES PUNTUACIONES</p>
+          <ol id="records-gameover-list" class="records-list"></ol>
+
+          <p class="records-summary">
+            <span>Mejor combo: <strong id="records-gameover-max-combo">0</strong></span>
+            <span>Máx. líneas: <strong id="records-gameover-max-lines">0</strong></span>
+          </p>
+        </div>
+
         <button id="restart-btn">Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="start-screen" class="overlay">
+      <div class="overlay-box">
+        <p id="start-title">TETRIS</p>
+
+        <div id="records-start-panel" class="records-panel">
+          <p class="records-heading">MEJORES PUNTUACIONES</p>
+          <ol id="records-start-list" class="records-list"></ol>
+
+          <p class="records-summary">
+            <span>Mejor combo: <strong id="records-start-max-combo">0</strong></span>
+            <span>Máx. líneas: <strong id="records-start-max-lines">0</strong></span>
+          </p>
+        </div>
+
+        <button id="records-play-btn">JUGAR</button>
+
+        <div class="records-reset-row">
+          <button id="records-reset-btn">Resetear records</button>
+          <div id="records-reset-confirm" class="records-reset-confirm records-hidden">
+            <span>¿Borrar todos los records?</span>
+            <button id="records-reset-confirm-yes">Sí, borrar</button>
+            <button id="records-reset-confirm-no">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

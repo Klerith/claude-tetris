@@ -234,3 +234,201 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Tabla de records ---- */
+
+.records-hidden {
+  display: none !important;
+}
+
+/* Mientras se pide el nombre para el top 5, se bloquea "Reiniciar" para no
+   perder la puntuación antes de guardarla. */
+#restart-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+#start-title {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: #7aa2f7;
+}
+
+.records-panel {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.records-heading {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--label);
+  font-weight: 700;
+  text-align: center;
+}
+
+.records-list {
+  list-style: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.records-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--text);
+  background: rgba(122, 162, 247, 0.06);
+}
+
+.records-row.records-highlight {
+  background: rgba(122, 162, 247, 0.35);
+  box-shadow: 0 0 0 1px #7aa2f7 inset;
+  color: #eaf1ff;
+}
+
+.records-rank {
+  width: 18px;
+  color: var(--label);
+  flex-shrink: 0;
+}
+
+.records-name {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.records-score {
+  color: #7aa2f7;
+  font-weight: 700;
+}
+
+.records-empty {
+  font-size: 12px;
+  color: var(--controls-text);
+  text-align: center;
+  padding: 6px 0;
+}
+
+.records-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  font-size: 11px;
+  color: var(--controls-text);
+}
+
+.records-summary strong {
+  color: #7aa2f7;
+}
+
+.records-name-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 4px;
+}
+
+#records-name-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-size: 13px;
+  text-align: center;
+}
+
+#records-play-btn,
+#records-save-btn {
+  margin-top: 4px;
+  background: #7aa2f7;
+  color: #0f0f17;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#records-play-btn:hover,
+#records-save-btn:hover {
+  background: #9bbdff;
+}
+
+.records-reset-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#records-reset-btn {
+  background: transparent;
+  color: var(--controls-text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+#records-reset-btn:hover {
+  color: #e57373;
+  border-color: #e57373;
+}
+
+.records-reset-confirm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--controls-text);
+  text-align: center;
+}
+
+.records-reset-confirm button {
+  border: none;
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+#records-reset-confirm-yes {
+  background: #e57373;
+  color: #0f0f17;
+}
+
+#records-reset-confirm-no {
+  background: var(--kbd-bg);
+  color: var(--text);
+}
