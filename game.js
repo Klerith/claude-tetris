@@ -42,7 +42,7 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, combo, maxCombo, gameStarted;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -110,8 +110,11 @@ function clearLines() {
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    combo++;
+    if (combo > maxCombo) maxCombo = combo;
     updateHUD();
   }
+  return cleared;
 }
 
 function ghostY() {
@@ -139,7 +142,8 @@ function softDrop() {
 
 function lockPiece() {
   merge();
-  clearLines();
+  const clearedCount = clearLines();
+  if (!clearedCount) combo = 0;
   spawn();
 }
 
@@ -226,6 +230,7 @@ function endGame() {
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
+  handleGameOverRecords();
 }
 
 function togglePause() {
@@ -268,16 +273,20 @@ function init() {
   gameOver = false;
   dropInterval = 1000;
   dropAccum = 0;
+  combo = 0;
+  maxCombo = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  resetGameOverRecordsPanel();
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
+  if (!gameStarted) return;
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -329,4 +338,230 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
 });
 
-init();
+// init() ya no se llama automáticamente al cargar: arranca desde la pantalla
+// de inicio (ver bloque "Tabla de records" más abajo), que llama a init()
+// cuando el jugador pulsa "JUGAR".
+
+// ---- Tabla de records ----
+// Persistencia en localStorage['tetris-records'] como un único objeto:
+//   { top: [{ name, score }, ...] (máx. 5, orden descendente),
+//     maxCombo: número más alto de combo conseguido en cualquier partida,
+//     maxLines: número más alto de líneas limpiadas en una sola partida }
+// No se usan claves adicionales: todo vive junto en 'tetris-records'.
+
+const RECORDS_KEY = 'tetris-records';
+const RECORDS_MAX_ENTRIES = 5;
+const RECORDS_NAME_MAX_LEN = 12;
+
+const startScreen = document.getElementById('start-screen');
+const recordsStartList = document.getElementById('records-start-list');
+const recordsStartMaxCombo = document.getElementById('records-start-max-combo');
+const recordsStartMaxLines = document.getElementById('records-start-max-lines');
+const recordsPlayBtn = document.getElementById('records-play-btn');
+const recordsResetBtn = document.getElementById('records-reset-btn');
+const recordsResetConfirm = document.getElementById('records-reset-confirm');
+const recordsResetConfirmYes = document.getElementById('records-reset-confirm-yes');
+const recordsResetConfirmNo = document.getElementById('records-reset-confirm-no');
+
+const recordsGameoverPanel = document.getElementById('records-gameover-panel');
+const recordsNameForm = document.getElementById('records-name-form');
+const recordsNameInput = document.getElementById('records-name-input');
+const recordsSaveBtn = document.getElementById('records-save-btn');
+const recordsGameoverList = document.getElementById('records-gameover-list');
+const recordsGameoverMaxCombo = document.getElementById('records-gameover-max-combo');
+const recordsGameoverMaxLines = document.getElementById('records-gameover-max-lines');
+
+let recordsData = loadRecords();
+// Referencia al registro insertado en la partida actual (para resaltarlo).
+let pendingHighlightRecord = null;
+
+function defaultRecordsData() {
+  return { top: [], maxCombo: 0, maxLines: 0 };
+}
+
+// Lee y valida lo guardado en localStorage. Ante cualquier dato corrupto o
+// con forma inesperada, se descarta y se devuelve el valor por defecto para
+// no romper el arranque del juego.
+function loadRecords() {
+  try {
+    const raw = localStorage.getItem(RECORDS_KEY);
+    if (!raw) return defaultRecordsData();
+
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== 'object' || !Array.isArray(parsed.top)) {
+      return defaultRecordsData();
+    }
+
+    const top = parsed.top
+      .filter(r => r && typeof r.name === 'string' && typeof r.score === 'number' && isFinite(r.score))
+      .map(r => ({ name: sanitizeName(r.name), score: r.score }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, RECORDS_MAX_ENTRIES);
+
+    const maxCombo = typeof parsed.maxCombo === 'number' && isFinite(parsed.maxCombo) ? parsed.maxCombo : 0;
+    const maxLines = typeof parsed.maxLines === 'number' && isFinite(parsed.maxLines) ? parsed.maxLines : 0;
+
+    return { top, maxCombo, maxLines };
+  } catch (e) {
+    return defaultRecordsData();
+  }
+}
+
+function saveRecords() {
+  try {
+    localStorage.setItem(RECORDS_KEY, JSON.stringify(recordsData));
+  } catch (e) {
+    // localStorage no disponible (modo privado, cuota llena, etc.): se ignora.
+  }
+}
+
+// Recorta y limpia el nombre del jugador. Siempre se inserta vía
+// textContent, así que esto es solo higiene de datos, no una defensa XSS.
+function sanitizeName(name) {
+  const trimmed = String(name).trim();
+  // Se recorta por puntos de código (no por unidades UTF-16) para no partir
+  // un par subrogado a la mitad si el nombre incluye, por ejemplo, un emoji.
+  const clipped = Array.from(trimmed).slice(0, RECORDS_NAME_MAX_LEN).join('');
+  return clipped || 'JUGADOR';
+}
+
+function qualifiesForTop(currentScore) {
+  if (recordsData.top.length < RECORDS_MAX_ENTRIES) return true;
+  const lowest = recordsData.top[recordsData.top.length - 1];
+  return currentScore > lowest.score;
+}
+
+function insertRecord(name, currentScore) {
+  const rec = { name: sanitizeName(name), score: currentScore };
+  recordsData.top.push(rec);
+  recordsData.top.sort((a, b) => b.score - a.score);
+  recordsData.top = recordsData.top.slice(0, RECORDS_MAX_ENTRIES);
+  saveRecords();
+  return rec;
+}
+
+function renderRecordsList(listEl, highlightRec) {
+  listEl.textContent = '';
+
+  if (recordsData.top.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'records-empty';
+    li.textContent = 'Sin puntuaciones aún';
+    listEl.appendChild(li);
+    return;
+  }
+
+  recordsData.top.forEach((rec, i) => {
+    const li = document.createElement('li');
+    li.className = 'records-row';
+    if (rec === highlightRec) li.classList.add('records-highlight');
+
+    const rank = document.createElement('span');
+    rank.className = 'records-rank';
+    rank.textContent = (i + 1) + '.';
+
+    const name = document.createElement('span');
+    name.className = 'records-name';
+    name.textContent = rec.name;
+
+    const scoreSpan = document.createElement('span');
+    scoreSpan.className = 'records-score';
+    scoreSpan.textContent = rec.score.toLocaleString();
+
+    li.append(rank, name, scoreSpan);
+    listEl.appendChild(li);
+  });
+}
+
+function renderStartPanel() {
+  renderRecordsList(recordsStartList, null);
+  recordsStartMaxCombo.textContent = recordsData.maxCombo;
+  recordsStartMaxLines.textContent = recordsData.maxLines;
+}
+
+function renderGameoverPanel() {
+  renderRecordsList(recordsGameoverList, pendingHighlightRecord);
+  recordsGameoverMaxCombo.textContent = recordsData.maxCombo;
+  recordsGameoverMaxLines.textContent = recordsData.maxLines;
+}
+
+// Se llama al terminar cada partida (desde endGame()): actualiza los
+// récords históricos de combo/líneas, decide si la puntuación entra en el
+// top 5 y muestra el panel de records en el overlay de game over.
+function handleGameOverRecords() {
+  if (maxCombo > recordsData.maxCombo) recordsData.maxCombo = maxCombo;
+  if (lines > recordsData.maxLines) recordsData.maxLines = lines;
+  saveRecords();
+
+  pendingHighlightRecord = null;
+  recordsGameoverPanel.classList.remove('records-hidden');
+
+  if (qualifiesForTop(score)) {
+    recordsNameForm.classList.remove('records-hidden');
+    recordsNameInput.value = '';
+    // Mientras el nombre no se guarde, se bloquea "Reiniciar": si el
+    // jugador reiniciara ahora, la puntuación que ya calificó para el top 5
+    // se perdería sin llegar a guardarse.
+    restartBtn.disabled = true;
+    renderGameoverPanel();
+    // Se difiere el foco un tick para no pelear con el resto del renderizado.
+    setTimeout(() => recordsNameInput.focus(), 0);
+  } else {
+    recordsNameForm.classList.add('records-hidden');
+    restartBtn.disabled = false;
+    renderGameoverPanel();
+  }
+}
+
+function saveCurrentScoreRecord() {
+  if (recordsNameForm.classList.contains('records-hidden')) return;
+  pendingHighlightRecord = insertRecord(recordsNameInput.value, score);
+  recordsNameForm.classList.add('records-hidden');
+  restartBtn.disabled = false;
+  renderGameoverPanel();
+}
+
+// Se llama desde init(): oculta el panel de game over para que no aparezca
+// reutilizado en el overlay compartido de pausa en la siguiente partida.
+function resetGameOverRecordsPanel() {
+  pendingHighlightRecord = null;
+  recordsGameoverPanel.classList.add('records-hidden');
+  recordsNameForm.classList.add('records-hidden');
+  restartBtn.disabled = false;
+}
+
+function resetAllRecords() {
+  recordsData = defaultRecordsData();
+  saveRecords();
+  pendingHighlightRecord = null;
+  renderStartPanel();
+}
+
+recordsSaveBtn.addEventListener('click', saveCurrentScoreRecord);
+recordsNameInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveCurrentScoreRecord();
+});
+
+recordsResetBtn.addEventListener('click', () => {
+  recordsResetBtn.classList.add('records-hidden');
+  recordsResetConfirm.classList.remove('records-hidden');
+});
+
+recordsResetConfirmYes.addEventListener('click', () => {
+  resetAllRecords();
+  recordsResetConfirm.classList.add('records-hidden');
+  recordsResetBtn.classList.remove('records-hidden');
+});
+
+recordsResetConfirmNo.addEventListener('click', () => {
+  recordsResetConfirm.classList.add('records-hidden');
+  recordsResetBtn.classList.remove('records-hidden');
+});
+
+recordsPlayBtn.addEventListener('click', () => {
+  gameStarted = true;
+  startScreen.classList.add('hidden');
+  init();
+});
+
+renderStartPanel();
