@@ -108,7 +108,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    level = runStartLevel + Math.floor(lines / 10);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -232,13 +232,12 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    closePauseMenu();
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    openPauseMenu();
   }
 }
 
@@ -263,22 +262,23 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  runStartLevel = startLevel;
+  level = runStartLevel;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
-  overlay.classList.add('hidden');
+  closePauseMenu();
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -327,6 +327,73 @@ themeToggle.addEventListener('click', () => {
   const isLight = !document.body.classList.contains('light-mode');
   applyTheme(isLight);
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
+});
+
+// ---- Menú de pausa ----
+const pauseMenu = document.getElementById('pause-menu');
+const pauseMainView = document.getElementById('pause-main-view');
+const pauseControlsView = document.getElementById('pause-controls-view');
+const pauseResumeBtn = document.getElementById('pause-resume-btn');
+const pauseRestartBtn = document.getElementById('pause-restart-btn');
+const pauseControlsBtn = document.getElementById('pause-controls-btn');
+const pauseBackBtn = document.getElementById('pause-back-btn');
+const pauseLevelSelect = document.getElementById('pause-level-select');
+const overlayBox = document.querySelector('.overlay-box');
+
+let startLevel = parseInt(localStorage.getItem('tetris-start-level'), 10);
+if (!Number.isInteger(startLevel) || startLevel < 1 || startLevel > 10) {
+  startLevel = 1;
+}
+// Snapshot of startLevel taken by init() for the run in progress, so changing
+// the selector mid-game (while paused) only affects the *next* game.
+let runStartLevel = startLevel;
+pauseLevelSelect.value = String(startLevel);
+
+function showPauseMainView() {
+  pauseControlsView.classList.add('hidden');
+  pauseMainView.classList.remove('hidden');
+}
+
+function openPauseMenu() {
+  showPauseMainView();
+  pauseLevelSelect.value = String(startLevel);
+  overlayBox.classList.add('hidden');
+  pauseMenu.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+}
+
+function closePauseMenu() {
+  overlay.classList.add('hidden');
+  pauseMenu.classList.add('hidden');
+  overlayBox.classList.remove('hidden');
+}
+
+pauseResumeBtn.addEventListener('click', () => {
+  togglePause();
+  pauseResumeBtn.blur();
+});
+
+pauseRestartBtn.addEventListener('click', () => {
+  init();
+  pauseRestartBtn.blur();
+});
+
+pauseControlsBtn.addEventListener('click', () => {
+  pauseMainView.classList.add('hidden');
+  pauseControlsView.classList.remove('hidden');
+  pauseControlsBtn.blur();
+});
+
+pauseBackBtn.addEventListener('click', () => {
+  showPauseMainView();
+  pauseBackBtn.blur();
+});
+
+pauseLevelSelect.addEventListener('change', () => {
+  const value = parseInt(pauseLevelSelect.value, 10);
+  startLevel = Number.isInteger(value) && value >= 1 && value <= 10 ? value : 1;
+  localStorage.setItem('tetris-start-level', String(startLevel));
+  pauseLevelSelect.blur();
 });
 
 init();
