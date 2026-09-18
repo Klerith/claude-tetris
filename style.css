@@ -234,3 +234,81 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- Skins visuales ---- */
+
+.skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  color: var(--kbd-text);
+  cursor: pointer;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+
+.skin-select:hover,
+.skin-select:focus {
+  border-color: #7aa2f7;
+  outline: none;
+}
+
+/* Retro: idéntica al tema por defecto, sin overrides. */
+
+body.skin-neon {
+  --bg: #000000;
+  --text: #e0fffe;
+  --canvas-bg: #050507;
+  --border: #00fff9;
+  --label: #00fff9;
+  --controls-text: #7dfcf7;
+  --kbd-bg: #001414;
+  --kbd-border: #00fff9;
+  --kbd-text: #baffff;
+  --overlay-bg: rgba(0, 10, 10, 0.8);
+  --grid-line: #001414;
+  --toggle-bg: #001414;
+  --toggle-border: #00fff9;
+  --toggle-text: #baffff;
+}
+
+body.skin-neon #board,
+body.skin-neon #next-canvas {
+  box-shadow: 0 0 24px rgba(0, 255, 249, 0.35), 0 0 40px rgba(0, 0, 0, 0.6);
+}
+
+body.skin-pastel {
+  --bg: #faf3f8;
+  --canvas-bg: #fdf7fb;
+  --border: #e3cbe0;
+  --grid-line: #f1e3ee;
+  --label: #a883b0;
+  --controls-text: #8a6b93;
+  --kbd-bg: #f3e5f0;
+  --kbd-border: #dcbfda;
+  --kbd-text: #7a5c82;
+  --toggle-bg: #f3e5f0;
+  --toggle-border: #dcbfda;
+  --toggle-text: #7a5c82;
+  --overlay-bg: rgba(250, 243, 248, 0.85);
+  --text: #4a3a50;
+}
+
+body.skin-pixel {
+  --bg: #101018;
+  --text: #e0e0e0;
+  --canvas-bg: #16161f;
+  --border: #4a4a5e;
+  --label: #8888a8;
+  --controls-text: #9999bb;
+  --kbd-bg: #22222e;
+  --kbd-border: #4a4a5e;
+  --kbd-text: #cfcfe0;
+  --overlay-bg: rgba(10, 10, 16, 0.8);
+  --grid-line: #2a2a38;
+  --toggle-bg: #22222e;
+  --toggle-border: #4a4a5e;
+  --toggle-text: #cfcfe0;
+}
