@@ -32,6 +32,7 @@ Three files, no framework, no bundler:
 | Scoring | `LINE_SCORES = [0,100,300,500,800]` × `level`; hard drop +2/cell, soft drop +1/row |
 | Speed | `dropInterval = max(100, 1000 − (level−1) × 90)` ms; level = `floor(lines/10) + 1` |
 | Ghost piece | `ghostY()` — projects current piece down until collision; drawn at `globalAlpha = 0.2` |
+| Skins | `SKINS` (`retro`/`neon`/`pastel`/`pixel`: `colors`, `drawBlock(ctx,x,y,color,size)`, `boardBg`, `gridLine`), `currentSkin`, `applySkin(name)`; `drawBlock()` delegates to the active skin; persisted in `localStorage['tetris-skin']`, selector `#skin-select`, body class `skin-<name>` |
 | State flags | `paused`, `gameOver`, `animId` (RAF handle) |
 
 ### Game flow
