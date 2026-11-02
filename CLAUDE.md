@@ -15,9 +15,9 @@ python3 -m http.server 8000      # then visit http://localhost:8000
 
 Three files, no framework, no bundler:
 
-- **`index.html`** — DOM structure: `<canvas id="board">` (300×600px) for the playfield, `<canvas id="next-canvas">` (120×120px) for the preview, sidebar HUD (`#score`, `#lines`, `#level`), and a shared overlay `#overlay` for both PAUSE and GAME OVER states.
+- **`index.html`** — DOM structure: `<canvas id="board">` (300×600px) for the playfield, `<canvas id="next-canvas">` (120×120px) for the preview, sidebar HUD (`#score`, `#lines`, `#level`), and a game-over overlay `#overlay` and a separate pause menu `#pause-menu`.
 - **`style.css`** — Dark/retro arcade theme; uses CSS variables, flexbox, and `backdrop-filter` on overlays.
-- **`game.js`** — All game logic (~305 lines, `'use strict'`, no modules).
+- **`game.js`** — All game logic (~390 lines, `'use strict'`, no modules).
 
 ### game.js internals
 
@@ -32,6 +32,7 @@ Three files, no framework, no bundler:
 | Scoring | `LINE_SCORES = [0,100,300,500,800]` × `level`; hard drop +2/cell, soft drop +1/row |
 | Speed | `dropInterval = max(100, 1000 − (level−1) × 90)` ms; level = `floor(lines/10) + 1` |
 | Ghost piece | `ghostY()` — projects current piece down until collision; drawn at `globalAlpha = 0.2` |
+| Pause menu | `#pause-menu` (separate from game-over `#overlay`); `P`/`Escape` → `togglePause()` → `onPauseChange()`; `startLevel` (1–15, `localStorage['tetris-start-level']`) applied in `init()` and as base of the level formula in `clearLines()` (`startLevel + floor(lines/10)`); `inputBlockedUntil` ignores game keys briefly after resume; `hidePauseMenu()` |
 | State flags | `paused`, `gameOver`, `animId` (RAF handle) |
 
 ### Game flow
