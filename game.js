@@ -42,6 +42,7 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 
+let startLevel = 1, inputBlockedUntil = 0;
 let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
 
 function createBoard() {
@@ -108,7 +109,7 @@ function clearLines() {
   if (cleared) {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    level = startLevel + Math.floor(lines / 10);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -236,10 +237,8 @@ function togglePause() {
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
   }
+  onPauseChange();
 }
 
 function loop(ts) {
@@ -263,23 +262,28 @@ function init() {
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  level = startLevel;
   paused = false;
   gameOver = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  hidePauseMenu();
+  inputBlockedUntil = 0;
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
-  if (paused || gameOver) return;
+  if ((e.code === 'KeyP' || e.code === 'Escape') && e.target.tagName !== 'SELECT') {
+    if (!e.repeat) togglePause();
+    return;
+  }
+  if (paused || gameOver || performance.now() < inputBlockedUntil) return;
   switch (e.code) {
     case 'ArrowLeft':
       if (!collide(current.shape, current.x - 1, current.y)) current.x--;
@@ -327,6 +331,58 @@ themeToggle.addEventListener('click', () => {
   const isLight = !document.body.classList.contains('light-mode');
   applyTheme(isLight);
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
+});
+
+// ---- MenÃº de pausa ----
+const pauseMenu = document.getElementById('pause-menu');
+const pauseControls = document.getElementById('pause-controls');
+const pauseResumeBtn = document.getElementById('pause-resume');
+const pauseRestartBtn = document.getElementById('pause-restart');
+const pauseControlsBtn = document.getElementById('pause-controls-btn');
+const startLevelSelect = document.getElementById('start-level');
+
+try {
+  const saved = parseInt(localStorage.getItem('tetris-start-level'), 10);
+  if (saved >= 1 && saved <= 15) startLevel = saved;
+} catch (err) { /* localStorage no disponible */ }
+startLevelSelect.value = String(startLevel);
+
+function hidePauseMenu() {
+  pauseMenu.classList.add('hidden');
+  pauseControls.classList.add('hidden');
+  pauseControlsBtn.setAttribute('aria-expanded', 'false');
+  if (pauseMenu.contains(document.activeElement)) document.activeElement.blur();
+}
+
+function onPauseChange() {
+  if (paused) {
+    pauseMenu.classList.remove('hidden');
+    pauseResumeBtn.focus();
+  } else {
+    hidePauseMenu();
+    inputBlockedUntil = performance.now() + 200; // evita movimientos accidentales
+  }
+}
+
+pauseResumeBtn.addEventListener('click', () => { if (paused) togglePause(); });
+pauseRestartBtn.addEventListener('click', init);
+pauseControlsBtn.addEventListener('click', () => {
+  const show = pauseControls.classList.toggle('hidden') === false;
+  pauseControlsBtn.setAttribute('aria-expanded', String(show));
+});
+startLevelSelect.addEventListener('change', () => {
+  startLevel = parseInt(startLevelSelect.value, 10) || 1;
+  try { localStorage.setItem('tetris-start-level', String(startLevel)); } catch (err) { /* ignorar */ }
+});
+// NavegaciÃ³n con flechas arriba/abajo entre los controles del menÃº
+pauseMenu.addEventListener('keydown', e => {
+  if (e.code !== 'ArrowUp' && e.code !== 'ArrowDown') return;
+  if (document.activeElement === startLevelSelect) return;
+  const items = [...pauseMenu.querySelectorAll('button, select')];
+  const i = items.indexOf(document.activeElement);
+  const n = items.length;
+  items[(i + (e.code === 'ArrowDown' ? 1 : n - 1)) % n].focus();
+  e.preventDefault();
 });
 
 init();

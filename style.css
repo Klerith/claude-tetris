@@ -234,3 +234,85 @@ kbd {
 #restart-btn:hover {
   background: #9bbdff;
 }
+
+/* ---- MenÃº de pausa ---- */
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: #7aa2f7;
+}
+
+.pause-box {
+  min-width: 200px;
+}
+
+.pause-btn {
+  width: 100%;
+  background: var(--toggle-bg);
+  color: var(--text);
+  border: 1px solid var(--toggle-border);
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.pause-btn:hover,
+.pause-btn:focus-visible,
+#start-level:focus-visible {
+  border-color: #7aa2f7;
+  outline: 2px solid #7aa2f7;
+  outline-offset: 1px;
+}
+
+#pause-resume {
+  background: #7aa2f7;
+  color: #0f0f17;
+  border-color: #7aa2f7;
+}
+
+#pause-controls {
+  list-style: none;
+  font-size: 13px;
+  color: var(--controls-text);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+#pause-controls.hidden {
+  display: none;
+}
+
+#pause-controls kbd {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--kbd-text);
+  border-radius: 3px;
+  padding: 1px 6px;
+  margin-right: 4px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.pause-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--label);
+  letter-spacing: 1px;
+}
+
+#start-level {
+  background: var(--kbd-bg);
+  color: var(--text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
