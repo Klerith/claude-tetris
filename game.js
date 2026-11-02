@@ -139,7 +139,9 @@ function softDrop() {
 
 function lockPiece() {
   merge();
+  const linesBefore = lines;
   clearLines();
+  recordsOnLock(lines - linesBefore);
   spawn();
 }
 
@@ -226,6 +228,7 @@ function endGame() {
   overlayTitle.textContent = 'GAME OVER';
   overlayScore.textContent = `Puntuación: ${score.toLocaleString()}`;
   overlay.classList.remove('hidden');
+  recordsOnGameOver();
 }
 
 function togglePause() {
@@ -266,6 +269,7 @@ function init() {
   level = 1;
   paused = false;
   gameOver = false;
+  recordsOnInit();
   dropInterval = 1000;
   dropAccum = 0;
   lastTime = performance.now();
@@ -329,4 +333,161 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('tetris-theme', isLight ? 'light' : 'dark');
 });
 
-init();
+// ---- Records (top 5 local, mejor combo, líneas máximas) ----
+const HS_KEY = 'tetris-highscores';
+const REC_KEY = 'tetris-records';
+const HS_MAX = 5;
+const startOverlay = document.getElementById('start-overlay');
+const startBtn = document.getElementById('start-btn');
+const goRecords = document.getElementById('gameover-records');
+const goEntry = document.getElementById('record-entry');
+const goName = document.getElementById('record-name');
+const goSave = document.getElementById('record-save');
+const goTable = document.getElementById('gameover-table');
+const goStats = document.getElementById('gameover-stats');
+const startTable = document.getElementById('start-table');
+const startStats = document.getElementById('start-stats');
+let combo = 0, runBestCombo = 0, savedEntry = null;
+
+function loadHighscores() {
+  try {
+    const a = JSON.parse(localStorage.getItem(HS_KEY));
+    if (Array.isArray(a)) {
+      return a.filter(e => e && typeof e.score === 'number')
+        .map(e => ({ ...e, name: String(e.name ?? 'Anónimo').slice(0, 12), lines: +e.lines || 0, level: +e.level || 1 }))
+        .sort((x, y) => y.score - x.score)
+        .slice(0, HS_MAX);
+    }
+  } catch (e) {}
+  return [];
+}
+function saveHighscores(list) {
+  try { localStorage.setItem(HS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+function loadRecordStats() {
+  try {
+    const o = JSON.parse(localStorage.getItem(REC_KEY));
+    if (o && typeof o === 'object') return { bestCombo: +o.bestCombo || 0, maxLines: +o.maxLines || 0 };
+  } catch (e) {}
+  return { bestCombo: 0, maxLines: 0 };
+}
+function saveRecordStats(s) {
+  try { localStorage.setItem(REC_KEY, JSON.stringify(s)); } catch (e) {}
+}
+function qualifiesForTop(s) {
+  const list = loadHighscores();
+  return s > 0 && (list.length < HS_MAX || s > list[list.length - 1].score);
+}
+
+function renderRecords(tableEl, statsEl, highlight) {
+  tableEl.textContent = '';
+  const list = loadHighscores();
+  if (!list.length) {
+    const p = document.createElement('p');
+    p.className = 'rec-empty';
+    p.textContent = 'Sin records todavía';
+    tableEl.appendChild(p);
+  } else {
+    const ol = document.createElement('ol');
+    ol.className = 'rec-list';
+    list.forEach(e => {
+      const li = document.createElement('li');
+      if (highlight && e.date === highlight.date && e.score === highlight.score) li.className = 'rec-new';
+      const n = document.createElement('span');
+      n.className = 'rec-name';
+      n.textContent = String(e.name);
+      const s = document.createElement('span');
+      s.className = 'rec-score';
+      s.textContent = Number(e.score).toLocaleString();
+      const d = document.createElement('span');
+      d.className = 'rec-meta';
+      d.textContent = `${e.lines} líneas · nv ${e.level}`;
+      li.append(n, s, d);
+      ol.appendChild(li);
+    });
+    tableEl.appendChild(ol);
+  }
+  const st = loadRecordStats();
+  statsEl.textContent = `Mejor combo: ${st.bestCombo} · Líneas máximas: ${st.maxLines}`;
+}
+
+function recordsOnInit() {
+  combo = 0;
+  runBestCombo = 0;
+  savedEntry = null;
+  goRecords.classList.add('hidden');
+}
+function recordsOnLock(cleared) {
+  if (cleared > 0) { combo++; if (combo > runBestCombo) runBestCombo = combo; }
+  else combo = 0;
+}
+function recordsOnGameOver() {
+  const st = loadRecordStats();
+  if (runBestCombo > st.bestCombo) st.bestCombo = runBestCombo;
+  if (lines > st.maxLines) st.maxLines = lines;
+  saveRecordStats(st);
+  goRecords.classList.remove('hidden');
+  const q = qualifiesForTop(score);
+  goEntry.classList.toggle('hidden', !q);
+  renderRecords(goTable, goStats, null);
+  if (q) { goName.value = ''; goName.focus(); }
+}
+function submitRecord() {
+  if (savedEntry || !gameOver || !qualifiesForTop(score)) return;
+  const entry = {
+    name: goName.value.trim().slice(0, 12) || 'Anónimo',
+    score, lines, level, date: new Date().toISOString(),
+  };
+  const list = loadHighscores();
+  let i = list.findIndex(e => e.score < entry.score);
+  if (i < 0) i = list.length;
+  list.splice(i, 0, entry);
+  list.length = Math.min(list.length, HS_MAX);
+  saveHighscores(list);
+  savedEntry = entry;
+  goEntry.classList.add('hidden');
+  renderRecords(goTable, goStats, entry);
+}
+function showStartScreen() {
+  gameOver = true; // bloquea el teclado hasta pulsar Jugar
+  renderRecords(startTable, startStats, null);
+  startOverlay.classList.remove('hidden');
+  startBtn.focus();
+}
+function startGame() {
+  startOverlay.classList.add('hidden');
+  init();
+}
+
+const resetBtn = document.getElementById('reset-records-btn');
+const resetConfirm = document.getElementById('reset-confirm');
+resetBtn.addEventListener('click', () => {
+  resetBtn.classList.add('hidden');
+  resetConfirm.classList.remove('hidden');
+});
+document.getElementById('reset-no').addEventListener('click', () => {
+  resetConfirm.classList.add('hidden');
+  resetBtn.classList.remove('hidden');
+});
+document.getElementById('reset-yes').addEventListener('click', () => {
+  try { localStorage.removeItem(HS_KEY); localStorage.removeItem(REC_KEY); } catch (e) {}
+  resetConfirm.classList.add('hidden');
+  resetBtn.classList.remove('hidden');
+  renderRecords(startTable, startStats, null);
+});
+startBtn.addEventListener('click', startGame);
+goSave.addEventListener('click', submitRecord);
+restartBtn.addEventListener('click', submitRecord, true); // no perder un record pendiente al reiniciar
+goName.addEventListener('keydown', e => {
+  e.stopPropagation();
+  if (e.key === 'Enter') submitRecord();
+});
+document.addEventListener('keydown', e => {
+  if ((e.code === 'Enter' || e.code === 'NumpadEnter') && !startOverlay.classList.contains('hidden')
+      && (e.target === startBtn || e.target.tagName !== 'BUTTON')) {
+    e.preventDefault();
+    startGame();
+  }
+});
+
+showStartScreen();

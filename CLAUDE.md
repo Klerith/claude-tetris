@@ -32,11 +32,12 @@ Three files, no framework, no bundler:
 | Scoring | `LINE_SCORES = [0,100,300,500,800]` × `level`; hard drop +2/cell, soft drop +1/row |
 | Speed | `dropInterval = max(100, 1000 − (level−1) × 90)` ms; level = `floor(lines/10) + 1` |
 | Ghost piece | `ghostY()` — projects current piece down until collision; drawn at `globalAlpha = 0.2` |
+| Records | `loadHighscores()`, `submitRecord()`, `renderRecords()`, `recordsOnLock()`, `recordsOnGameOver()`, `showStartScreen()`, `startGame()`; keys `tetris-highscores` (top 5), `tetris-records` (best combo, max lines); start screen `#start-overlay` |
 | State flags | `paused`, `gameOver`, `animId` (RAF handle) |
 
 ### Game flow
 
-`init()` → `spawn()` → `requestAnimationFrame(loop)`. Each frame: accumulate dt → auto-drop or `lockPiece()` → `draw()`. `lockPiece()` = `merge()` + `clearLines()` + `spawn()`. If `spawn()` immediately collides → `endGame()`.
+On load `showStartScreen()` shows `#start-overlay`; "Jugar"/Enter calls `startGame()` → `init()` → `spawn()` → `requestAnimationFrame(loop)`. Each frame: accumulate dt → auto-drop or `lockPiece()` → `draw()`. `lockPiece()` = `merge()` + `clearLines()` + `spawn()`. If `spawn()` immediately collides → `endGame()`.
 
 ## Tunable constants (top of game.js)
 
